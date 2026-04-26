@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<title>KPI Student Registry | কুষ্টিয়া পলিটেকনিক ইনস্টিটিউট</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Epilogue:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+/* Light/Dark Mode Variables */
+:root{
+  --bg:#07090f;
+  --surface:#0d1120;
+  --surface2:#141928;
+  --border:#1e2740;
+  --border2:#2a3555;
+  --text:#e8eaf2;
+  --text-secondary:#a0a8c0;
+  --muted:#5a6480;
+  --accent:#4f7bff;
+  --accent2:#7c5cfc;
+  --accent3:#00d4aa;
+  --danger:#ff4f6a;
+  --warn:#ffb94f;
+  --radius:10px;
+  --shadow:0 4px 20px rgba(0,0,0,0.3);
+  --transition:all 0.3s ease;
+}
+
+[data-theme="light"]{
+  --bg:#f0f4f8;
+  --surface:#ffffff;
+  --surface2:#f8fafc;
+  --border:#e2e8f0;
+  --border2:#cbd5e1;
+  --text:#0f172a;
+  --text-secondary:#334155;
+  --muted:#64748b;
+  --accent:#3b82f6;
+  --accent2:#8b5cf6;
+  --accent3:#10b981;
+  --danger:#ef4444;
+  --warn:#f59e0b;
+  --shadow:0 4px 20px rgba(0,0,0,0.08);
+}
+
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Epilogue',sans-serif;
+  min-height:100vh;
+  overflow-x:hidden;
+  transition:var(--transition);
+}
+
+.topbar{
+  position:sticky;top:0;z-index:100;
+  background:rgba(7,9,15,0.85);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+  padding:0 1rem;
+  display:flex;align-items:center;justify-content:space-between;
+  height:60px;
+}
+@media(min-width:768px){
+  .topbar{padding:0 2rem;}
+}
+
+.logo{
+  font-family:'Syne',sans-serif;
+  font-weight:800;
+  font-size:0.9rem;
+  letter-spacing:-0.02em;
+  display:flex;align-items:center;gap:0.5rem;
+}
+@media(min-width:768px){
+  .logo{font-size:1.1rem;gap:0.6rem;}
+}
+
+.logo-dot{
+  width:8px;height:8px;
+  border-radius:50%;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  box-shadow:0 0 12px rgba(79,123,255,0.6);
+}
+
+.topbar-right{
+  display:flex;align-items:center;gap:0.5rem;
+}
+@media(min-width:768px){
+  .topbar-right{gap:1rem;}
+}
+
+.stat-chip{
+  font-size:0.6rem;
+  font-family:'Syne',sans-serif;
+  font-weight:600;
+  letter-spacing:0.05em;
+  padding:0.25rem 0.6rem;
+  border-radius:100px;
+  border:1px solid var(--border2);
+  color:var(--muted);
+  background:var(--surface);
+}
+@media(min-width:768px){
+  .stat-chip{font-size:0.7rem;padding:0.3rem 0.7rem;}
+}
+
+.theme-toggle{
+  background:var(--surface2);
+  border:1px solid var(--border2);
+  border-radius:40px;
+  width:32px;
+  height:32px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  transition:var(--transition);
+  color:var(--text);
+}
+@media(min-width:768px){
+  .theme-toggle{width:36px;height:36px;}
+}
+.theme-toggle:hover{
+  border-color:var(--accent);
+  transform:scale(1.05);
+}
+
+.main{
+  max-width:1440px;
+  margin:0 auto;
+  padding:1rem;
+  position:relative;z-index:1;
+}
+@media(min-width:768px){
+  .main{padding:2rem;}
+}
+
+.institute-banner{
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  border-radius:20px;
+  padding:1rem 1.2rem;
+  margin-bottom:1.5rem;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:0.8rem;
+  animation:fadeUp 0.5s ease both;
+}
+@media(min-width:768px){
+  .institute-banner{padding:1.5rem 2rem;border-radius:24px;margin-bottom:2rem;}
+}
+.banner-content h2{
+  font-family:'Syne',sans-serif;
+  font-size:1rem;
+  font-weight:700;
+  color:white;
+  letter-spacing:-0.02em;
+}
+@media(min-width:768px){
+  .banner-content h2{font-size:1.4rem;}
+}
+.banner-content p{
+  font-size:0.65rem;
+  opacity:0.9;
+  color:white;
+  margin-top:0.15rem;
+}
+@media(min-width:768px){
+  .banner-content p{font-size:0.8rem;}
+}
+.banner-icon{
+  font-size:2rem;
+  opacity:0.3;
+  color:white;
+}
+@media(min-width:768px){
+  .banner-icon{font-size:3rem;}
+}
+
+.page-header{
+  margin-bottom:1.2rem;
+  animation:fadeUp 0.5s 0.07s ease both;
+}
+@media(min-width:768px){
+  .page-header{margin-bottom:2rem;}
+}
+.page-header h1{
+  font-family:'Syne',sans-serif;
+  font-size:1.3rem;
+  font-weight:800;
+  letter-spacing:-0.03em;
+  background:linear-gradient(135deg,var(--text) 40%,var(--muted));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+@media(min-width:768px){
+  .page-header h1{font-size:2rem;}
+}
+
+/* Search Panel - Collapsible */
+.search-panel{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  margin-bottom:1.5rem;
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
+.filter-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:1rem 1.2rem;
+  cursor:pointer;
+  transition:var(--transition);
+  background:var(--surface);
+}
+.filter-header:hover{
+  background:rgba(79,123,255,0.05);
+}
+.filter-header .panel-label{
+  font-family:'Syne',sans-serif;
+  font-size:0.65rem;
+  font-weight:700;
+  letter-spacing:0.15em;
+  text-transform:uppercase;
+  color:var(--accent3);
+  display:flex;
+  align-items:center;gap:0.5rem;
+  margin:0;
+}
+.filter-toggle-icon{
+  color:var(--muted);
+  transition:transform 0.3s ease;
+  font-size:0.9rem;
+}
+.filter-toggle-icon.rotated{
+  transform:rotate(180deg);
+}
+.filter-content{
+  padding:0 1.2rem;
+  max-height:0;
+  overflow:hidden;
+  transition:max-height 0.4s cubic-bezier(0.4,0,0.2,1);
+}
+.filter-content.open{
+  max-height:2000px;
+  padding:0 1.2rem 1.2rem 1.2rem;
+}
+.global-search{
+  position:relative;
+  margin-bottom:1rem;
+}
+.global-search input{
+  width:100%;
+  background:var(--surface2);
+  border:1px solid var(--border2);
+  border-radius:var(--radius);
+  padding:0.7rem 1rem 0.7rem 2.5rem;
+  font-family:'Epilogue',sans-serif;
+  font-size:0.85rem;
+  color:var(--text);
+  outline:none;
+  transition:var(--transition);
+}
+.global-search input:focus{
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px rgba(79,123,255,0.1);
+}
+.filter-grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:0.7rem;
+  margin-bottom:1rem;
+}
+@media(min-width:640px){
+  .filter-grid{grid-template-columns:repeat(2,1fr);}
+}
+@media(min-width:1024px){
+  .filter-grid{grid-template-columns:repeat(auto-fill,minmax(180px,1fr));}
+}
+.filter-item label{
+  display:block;
+  font-size:0.6rem;
+  font-family:'Syne',sans-serif;
+  font-weight:600;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin-bottom:0.3rem;
+}
+.filter-item input, .filter-item select{
+  width:100%;
+  background:var(--surface2);
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:0.45rem 0.7rem;
+  font-family:'Epilogue',sans-serif;
+  font-size:0.8rem;
+  color:var(--text);
+  transition:var(--transition);
+}
+.filter-actions{
+  display:flex;align-items:center;gap:0.7rem;
+  flex-wrap:wrap;
+  margin-bottom:1rem;
+}
+.btn{
+  padding:0.45rem 1rem;
+  border-radius:8px;
+  font-family:'Syne',sans-serif;
+  font-size:0.7rem;
+  font-weight:700;
+  cursor:pointer;
+  border:none;
+  transition:var(--transition);
+}
+@media(min-width:768px){
+  .btn{padding:0.5rem 1.1rem;font-size:0.72rem;}
+}
+.btn-primary{
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#fff;
+}
+.btn-primary:hover{opacity:0.88;transform:translateY(-1px);}
+.btn-ghost{
+  background:transparent;
+  border:1px solid var(--border2);
+  color:var(--text);
+}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent);}
+.active-filters{
+  display:flex;flex-wrap:wrap;gap:0.4rem;
+}
+.filter-tag{
+  display:inline-flex;align-items:center;gap:0.4rem;
+  background:rgba(79,123,255,0.12);
+  border:1px solid rgba(79,123,255,0.25);
+  color:var(--accent);
+  font-size:0.6rem;
+  font-family:'Syne',sans-serif;
+  font-weight:600;
+  padding:0.2rem 0.5rem;
+  border-radius:100px;
+}
+.filter-tag button{
+  background:none;border:none;
+  color:inherit;cursor:pointer;
+  font-size:0.7rem;
+}
+
+/* Table Controls */
+.table-controls{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:0.75rem;
+  flex-wrap:wrap;
+  gap:0.75rem;
+  background:var(--surface);
+  padding:0.8rem;
+  border-radius:var(--radius);
+  border:1px solid var(--border);
+}
+@media(min-width:768px){
+  .table-controls{padding:1rem;}
+}
+.results-info{
+  font-size:0.7rem;
+  color:var(--muted);
+}
+.sort-group{
+  display:flex;align-items:center;gap:0.4rem;
+  flex-wrap:wrap;
+}
+.sort-group label{
+  font-size:0.6rem;
+  font-family:'Syne',sans-serif;
+  font-weight:700;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  color:var(--muted);
+}
+.sort-select, .group-select{
+  background:var(--surface2);
+  border:1px solid var(--border2);
+  border-radius:8px;
+  padding:0.35rem 1.8rem 0.35rem 0.6rem;
+  font-family:'Epilogue',sans-serif;
+  font-size:0.7rem;
+  color:var(--text);
+  outline:none;
+  cursor:pointer;
+}
+.sort-dir{
+  width:30px;height:30px;
+  border-radius:8px;
+  background:var(--surface2);
+  border:1px solid var(--border2);
+  color:var(--muted);
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.sort-dir.asc::after{content:'↑';}
+.sort-dir.desc::after{content:'↓';}
+.per-page select{
+  background:var(--surface2);
+  border:1px solid var(--border2);
+  border-radius:6px;
+  padding:0.25rem 0.5rem;
+  color:var(--text);
+  font-size:0.65rem;
+}
+
+/* Table */
+.table-wrap{
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  overflow:hidden;
+  background:var(--surface);
+  box-shadow:var(--shadow);
+}
+.table-scroll{overflow-x:auto;}
+table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:0.7rem;
+  min-width:800px;
+}
+@media(min-width:768px){
+  table{font-size:0.8rem;min-width:1000px;}
+}
+thead tr{
+  background:var(--surface2);
+  border-bottom:2px solid var(--border2);
+}
+th{
+  padding:0.6rem 0.8rem;
+  text-align:left;
+  font-family:'Syne',sans-serif;
+  font-size:0.55rem;
+  font-weight:700;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  color:var(--muted);
+  white-space:nowrap;
+  cursor:pointer;
+}
+@media(min-width:768px){
+  th{padding:0.75rem 1rem;font-size:0.62rem;}
+}
+tr.group-header{
+  background:linear-gradient(90deg,rgba(79,123,255,0.08),transparent);
+  border-top:2px solid var(--border2);
+}
+tr.group-header td{
+  padding:0.4rem 0.8rem;
+  font-family:'Syne',sans-serif;
+  font-size:0.6rem;
+  font-weight:700;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  color:var(--accent3);
+}
+tbody tr{
+  border-bottom:1px solid var(--border);
+  cursor:pointer;
+  transition:var(--transition);
+}
+tbody tr:hover{
+  background:rgba(79,123,255,0.08);
+}
+td{
+  padding:0.6rem 0.8rem;
+  color:var(--text);
+  white-space:nowrap;
+}
+@media(min-width:768px){
+  td{padding:0.7rem 1rem;}
+}
+.td-name{
+  font-family:'Syne',sans-serif;
+  font-weight:600;
+  font-size:0.75rem;
+}
+.student-avatar{
+  width:32px;
+  height:32px;
+  border-radius:10px;
+  object-fit:cover;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:700;
+  font-size:0.85rem;
+  color:white;
+  flex-shrink:0;
+}
+@media(min-width:768px){
+  .student-avatar{width:40px;height:40px;border-radius:12px;font-size:1rem;}
+}
+.cell-with-avatar{
+  display:flex;
+  align-items:center;
+  gap:0.5rem;
+}
+.badge{
+  display:inline-flex;
+  padding:0.15rem 0.45rem;
+  border-radius:100px;
+  font-size:0.55rem;
+  font-weight:700;
+}
+@media(min-width:768px){
+  .badge{padding:0.2rem 0.55rem;font-size:0.6rem;}
+}
+.badge-day{background:rgba(0,212,170,0.12);color:var(--accent3);}
+.badge-morning{background:rgba(255,185,79,0.12);color:var(--warn);}
+.badge-m{background:rgba(79,123,255,0.12);color:var(--accent);}
+.badge-f{background:rgba(255,79,106,0.12);color:var(--danger);}
+.badge-o{background:rgba(124,92,252,0.12);color:var(--accent2);}
+
+/* Modal */
+.modal{
+  display:none;
+  position:fixed;
+  top:0;left:0;
+  width:100%;height:100%;
+  background:rgba(0,0,0,0.85);
+  backdrop-filter:blur(12px);
+  z-index:1000;
+  align-items:center;
+  justify-content:center;
+}
+.modal.active{display:flex;}
+.modal-content{
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:24px;
+  max-width:550px;
+  width:92%;
+  max-height:85vh;
+  overflow-y:auto;
+  box-shadow:0 25px 50px -12px rgba(0,0,0,0.5);
+  animation:modalSlideIn 0.3s cubic-bezier(0.34,1.2,0.64,1);
+}
+.modal-header{
+  padding:1.2rem;
+  border-bottom:2px solid var(--border);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  position:sticky;
+  top:0;
+  background:var(--surface);
+  z-index:5;
+}
+@media(min-width:768px){
+  .modal-header{padding:1.5rem 1.8rem;}
+}
+.modal-header h3{
+  font-family:'Syne',sans-serif;
+  font-size:1.1rem;
+  font-weight:700;
+  background:linear-gradient(135deg,var(--accent),var(--accent3));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  display:flex;
+  align-items:center;
+  gap:0.5rem;
+}
+.close-modal{
+  background:rgba(255,255,255,0.05);
+  border:none;
+  width:30px;
+  height:30px;
+  border-radius:50%;
+  color:var(--muted);
+  font-size:1.1rem;
+  cursor:pointer;
+  transition:var(--transition);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.close-modal:hover{
+  background:var(--danger);
+  color:white;
+  transform:rotate(90deg);
+}
+.modal-body{
+  padding:1.2rem;
+}
+@media(min-width:768px){
+  .modal-body{padding:1.8rem;}
+}
+.profile-section{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  text-align:center;
+  gap:1rem;
+  margin-bottom:1.5rem;
+  padding-bottom:1.2rem;
+  border-bottom:2px dashed var(--border2);
+}
+@media(min-width:480px){
+  .profile-section{flex-direction:row;text-align:left;}
+}
+.profile-img-large{
+  width:80px;
+  height:80px;
+  border-radius:24px;
+  object-fit:cover;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:2.2rem;
+  font-weight:700;
+  color:white;
+  box-shadow:0 8px 20px rgba(0,0,0,0.2);
+}
+.profile-info h3{
+  font-family:'Syne',sans-serif;
+  font-size:1.2rem;
+  font-weight:800;
+  color:var(--text);
+}
+.badge-group{
+  display:flex;
+  gap:0.4rem;
+  flex-wrap:wrap;
+  justify-content:center;
+  margin-top:0.5rem;
+}
+@media(min-width:480px){
+  .badge-group{justify-content:flex-start;}
+}
+.profile-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:0.3rem;
+  background:rgba(79,123,255,0.12);
+  padding:0.2rem 0.6rem;
+  border-radius:100px;
+  font-size:0.65rem;
+  color:var(--accent3);
+}
+.detail-section{
+  margin-bottom:1.2rem;
+}
+.detail-section-title{
+  font-family:'Syne',sans-serif;
+  font-size:0.6rem;
+  font-weight:700;
+  letter-spacing:0.15em;
+  text-transform:uppercase;
+  color:var(--accent3);
+  margin-bottom:0.8rem;
+  display:flex;
+  align-items:center;
+  gap:0.4rem;
+  border-left:2px solid var(--accent);
+  padding-left:0.7rem;
+}
+.detail-grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:0.7rem;
+}
+@media(min-width:480px){
+  .detail-grid{grid-template-columns:repeat(2,1fr);}
+}
+.detail-card{
+  background:var(--surface2);
+  border-radius:14px;
+  padding:0.6rem 0.8rem;
+  transition:var(--transition);
+  border:1px solid var(--border);
+}
+.detail-label{
+  font-size:0.55rem;
+  font-weight:600;
+  text-transform:uppercase;
+  letter-spacing:0.1em;
+  color:var(--accent);
+  margin-bottom:0.25rem;
+  display:flex;
+  align-items:center;
+  gap:0.25rem;
+}
+.detail-value{
+  font-size:0.75rem;
+  font-weight:500;
+  color:var(--text);
+  word-break:break-word;
+}
+.full-width{grid-column:span 1;}
+@media(min-width:480px){
+  .full-width{grid-column:span 2;}
+}
+.pagination{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0.8rem;
+  border-top:1px solid var(--border);
+  flex-wrap:wrap;gap:0.6rem;
+  background:var(--surface);
+}
+.page-btn{
+  background:var(--surface2);
+  border:1px solid var(--border2);
+  padding:0.3rem 0.6rem;
+  border-radius:6px;
+  color:var(--text);
+  cursor:pointer;
+  font-size:0.7rem;
+}
+.page-btn.active{
+  border-color:var(--accent);
+  color:var(--accent);
+  background:rgba(79,123,255,0.1);
+}
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(16px);}
+  to{opacity:1;transform:translateY(0);}
+}
+@keyframes modalSlideIn{
+  from{opacity:0;transform:scale(0.95) translateY(-20px);}
+  to{opacity:1;transform:scale(1) translateY(0);}
+}
+</style>
+</head>
+<body data-theme="dark">
+
+<header class="topbar">
+  <div class="logo">
+    <div class="logo-dot"></div>
+    KPI Student DB
+  </div>
+  <div class="topbar-right">
+    <div class="stat-chip"><span id="total-count">{{ students.count }}</span> Students</div>
+    <div class="stat-chip"> <a style="text-decoration: none;" href="{% url 'upload_students' %}">Add Data</a></div>
+    <div class="stat-chip"> <a style="text-decoration: none;" href="/admin">Admin</a></div>
+    <div class="theme-toggle" id="themeToggle">
+      <i class="fas fa-moon"></i>
+    </div>
+  </div>
+</header>
+
+<div class="main">
+  <div class="institute-banner">
+    <div class="banner-content">
+      <h2><i class="fas fa-graduation-cap"></i> কুষ্টিয়া পলিটেকনিক</h2>
+      <p>CST | First Shift | Excellence in Technical Education</p>
+    </div>
+    <div class="banner-icon"><i class="fas fa-database"></i></div>
+  </div>
+  <div class="page-header"><h1>Student Registry</h1></div>
+
+  <!-- COLLAPSIBLE SEARCH PANEL -->
+  <div class="search-panel">
+    <div class="filter-header" id="filterHeader">
+      <div class="panel-label"><i class="fas fa-search"></i> Search &amp; Filters</div>
+      <i class="fas fa-chevron-down filter-toggle-icon" id="filterToggleIcon"></i>
+    </div>
+    <div class="filter-content" id="filterContent">
+      <div class="global-search">
+        <input type="text" id="globalSearch" placeholder="Search by name, roll, reg, email, phone..." autocomplete="off"/>
+      </div>
+      <form id="filterForm">
+        <div class="filter-grid" id="filterGrid">
+          <div class="filter-item"><label>Name</label><input type="text" name="name" placeholder="Student name"/></div>
+          <div class="filter-item"><label>Father Name</label><input type="text" name="father_name" placeholder="Father's name"/></div>
+          <div class="filter-item"><label>Mother Name</label><input type="text" name="mother_name" placeholder="Mother's name"/></div>
+          <div class="filter-item"><label>Roll</label><input type="text" name="roll" placeholder="Roll number"/></div>
+          <div class="filter-item"><label>Registration</label><input type="text" name="reg" placeholder="Reg number"/></div>
+          <div class="filter-item"><label>Semester</label>
+            <select name="semester"><option value="">All</option><option value="1">Semester 1</option><option value="2">Semester 2</option><option value="3">Semester 3</option><option value="4">Semester 4</option><option value="5">Semester 5</option><option value="6">Semester 6</option><option value="7">Semester 7</option><option value="8">Semester 8</option></select>
+          </div>
+          <div class="filter-item"><label>Session</label><input type="text" name="session" placeholder="e.g. 2022-23"/></div>
+          <div class="filter-item"><label>Shift</label>
+            <select name="shift"><option value="">All</option><option value="Morning">Morning</option><option value="Day">Day</option></select>
+          </div>
+          <div class="filter-item"><label>Section</label><input type="text" name="section" placeholder="Section"/></div>
+          <div class="filter-item"><label>Gender</label>
+            <select name="gender"><option value="">All</option><option value="M">Male</option><option value="F">Female</option><option value="O">Other</option></select>
+          </div>
+          <div class="filter-item"><label>Blood Group</label>
+            <select name="blood_group"><option value="">All</option><option value="A+">A+</option><option value="A-">A-</option><option value="B+">B+</option><option value="B-">B-</option><option value="O+">O+</option><option value="O-">O-</option><option value="AB+">AB+</option><option value="AB-">AB-</option></select>
+          </div>
+          <div class="filter-item"><label>Religion</label>
+            <select name="religion"><option value="">All</option><option value="Islam">Islam</option><option value="Hinduism">Hinduism</option><option value="Christianity">Christianity</option><option value="Buddhism">Buddhism</option></select>
+          </div>
+          <div class="filter-item"><label>Nationality</label><input type="text" name="nationality" placeholder="e.g. Bangladeshi"/></div>
+          <div class="filter-item"><label>Email</label><input type="text" name="email" placeholder="Email address"/></div>
+          <div class="filter-item"><label>Mobile</label><input type="text" name="mobile_number" placeholder="Mobile number"/></div>
+        </div>
+        <div class="filter-actions">
+          <button type="submit" class="btn btn-primary"><i class="fas fa-filter"></i> Apply</button>
+          <button type="button" class="btn btn-ghost" id="resetBtn"><i class="fas fa-undo-alt"></i> Reset</button>
+        </div>
+        <div class="active-filters" id="activeTags"></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- TABLE CONTROLS -->
+  <div class="table-controls">
+    <div class="results-info"><i class="fas fa-users"></i> <strong id="showing-count">—</strong> of <strong id="total-shown">—</strong></div>
+    <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;">
+      <div class="sort-group"><label><i class="fas fa-layer-group"></i> GROUP</label><select class="group-select" id="groupBy"><option value="">None</option><option value="semester">Semester</option><option value="shift">Shift</option><option value="section">Section</option><option value="session">Session</option><option value="gender">Gender</option><option value="blood_group">Blood</option><option value="religion">Religion</option></select></div>
+      <div class="sort-group"><label><i class="fas fa-sort"></i> SORT</label><select class="sort-select" id="sortBy"><option value="name">Name</option><option value="roll">Roll</option><option value="reg">Reg</option><option value="semester">Semester</option><option value="session">Session</option></select></div>
+      <button class="sort-dir asc" id="sortDir"></button>
+      <div class="per-page"><i class="fas fa-list"></i> <select id="perPage"><option value="10">10</option><option value="25" selected>25</option><option value="50">50</option><option value="100">100</option></select></div>
+    </div>
+  </div>
+
+  <!-- TABLE -->
+  <div class="table-wrap">
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th data-col="name">Name</th><th data-col="roll">Roll</th><th data-col="reg">Reg</th><th data-col="semester">Sem</th><th data-col="session">Session</th><th data-col="shift">Shift</th><th data-col="section">Sec</th><th data-col="gender">Gender</th><th data-col="mobile_number">Mobile</th></tr></thead>
+        <tbody id="tableBody">
+          {% for student in students %}
+          <tr class="student-row" style="display:none;"
+              data-id="{{ student.id }}"
+              data-name="{{ student.name }}"
+              data-father="{{ student.father_name }}"
+              data-mother="{{ student.mother_name }}"
+              data-roll="{{ student.roll }}"
+              data-reg="{{ student.reg }}"
+              data-semester="{{ student.semester }}"
+              data-session="{{ student.session }}"
+              data-shift="{{ student.shift }}"
+              data-section="{{ student.section|default:'—' }}"
+              data-gender="{{ student.gender }}"
+              data-gender-display="{{ student.get_gender_display }}"
+              data-blood_group="{{ student.blood_group|default:'—' }}"
+              data-date_of_birth="{{ student.date_of_birth|date:'Y-m-d' }}"
+              data-dob-formatted="{{ student.date_of_birth|date:'d M Y' }}"
+              data-email="{{ student.email }}"
+              data-mobile_number="{{ student.mobile_number }}"
+              data-alternate_mobile="{{ student.alternate_mobile|default:'—' }}"
+              data-present_address="{{ student.present_address|default:'—' }}"
+              data-permanent_address="{{ student.permanent_address|default:'—' }}"
+              data-emergency_contact_name="{{ student.emergency_contact_name|default:'—' }}"
+              data-emergency_contact_number="{{ student.emergency_contact_number|default:'—' }}"
+              data-nationality="{{ student.nationality|default:'Bangladeshi' }}"
+              data-religion="{{ student.religion|default:'—' }}"
+              data-created="{{ student.created_at|date:'d M Y, h:i A' }}"
+              {% if student.profile_picture %}data-photo-url="{{ student.profile_picture.url }}"{% endif %}>
+            <td><div class="cell-with-avatar">{% if student.profile_picture %}<img class="student-avatar" src="{{ student.profile_picture.url }}" alt="{{ student.name }}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><div class="student-avatar" style="display:none;">{{ student.name|slice:":1"|upper }}</div>{% else %}<div class="student-avatar">{{ student.name|slice:":1"|upper }}</div>{% endif %}<div><div class="td-name">{{ student.name }}</div><div style="font-size:0.6rem;color:var(--muted);">{{ student.father_name }}</div></div></div></td>
+              <td>{{ student.roll }}</td><td>{{ student.reg }}</td><td>{{ student.semester }}</td><td>{{ student.session }}</td>
+              <td><span class="badge {% if student.shift == 'Morning' %}badge-morning{% else %}badge-day{% endif %}">{{ student.shift }}</span></td>
+              <td>{{ student.section|default:"—" }}</td>
+              <td><span class="badge {% if student.gender == 'M' %}badge-m{% elif student.gender == 'F' %}badge-f{% else %}badge-o{% endif %}">{{ student.get_gender_display }}</span></td>
+              <td>{{ student.mobile_number }}</td>
+            </tr>
+          {% empty %}<tr><td colspan="9" style="text-align:center;padding:2rem;">No students found</td></tr>{% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="pagination"><div id="pageInfo"></div><div id="pageBtns"></div><div></div></div>
+  </div>
+</div>
+
+<div id="studentModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header"><h3><i class="fas fa-id-card"></i> Student Profile</h3><button class="close-modal">&times;</button></div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+// Theme Toggle
+const themeToggle = document.getElementById('themeToggle');
+const root = document.documentElement;
+const currentTheme = localStorage.getItem('theme') || 'dark';
+root.setAttribute('data-theme', currentTheme);
+updateThemeIcon(currentTheme);
+themeToggle.addEventListener('click', () => {
+  const current = root.getAttribute('data-theme');
+  const newTheme = current === 'dark' ? 'light' : 'dark';
+  root.setAttribute('data-theme', newTheme);
+  localStorage.setItem('theme', newTheme);
+  updateThemeIcon(newTheme);
+});
+function updateThemeIcon(theme){ themeToggle.querySelector('i').className = theme === 'dark' ? 'fas fa-moon' : 'fas fa-sun'; }
+
+// Collapsible Filter
+const filterHeader = document.getElementById('filterHeader');
+const filterContent = document.getElementById('filterContent');
+const filterToggleIcon = document.getElementById('filterToggleIcon');
+const isMobile = window.innerWidth < 768;
+let filterOpen = !isMobile;
+if(isMobile){
+  filterOpen = false;
+  filterContent.classList.remove('open');
+  filterToggleIcon.classList.remove('rotated');
+} else {
+  filterContent.classList.add('open');
+  filterToggleIcon.classList.add('rotated');
+}
+filterHeader.addEventListener('click', () => {
+  filterOpen = !filterOpen;
+  if(filterOpen){
+    filterContent.classList.add('open');
+    filterToggleIcon.classList.add('rotated');
+  } else {
+    filterContent.classList.remove('open');
+    filterToggleIcon.classList.remove('rotated');
+  }
+});
+
+let allRows = [], filteredRows = [];
+let currentPage = 1, perPage = 25, sortCol = 'name', sortDir = 'asc', groupBy = '';
+
+document.addEventListener('DOMContentLoaded', () => {
+  allRows = Array.from(document.querySelectorAll('.student-row'));
+  document.getElementById('total-count').textContent = allRows.length;
+  filteredRows = [...allRows];
+  allRows.forEach(row => row.addEventListener('click', (e) => { if(!e.target.closest('.action-btn')) showStudentDetails(row); }));
+  bindEvents();
+  applyFiltersAndRender();
+  document.querySelectorAll('.student-avatar').forEach(img => { if(img.tagName === 'IMG') img.addEventListener('error', function(){ this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex'; }); });
+});
+
+function bindEvents(){
+  document.getElementById('filterForm').addEventListener('submit', e => { e.preventDefault(); applyFiltersAndRender(); });
+  document.getElementById('resetBtn').addEventListener('click', () => { document.getElementById('filterForm').reset(); document.getElementById('globalSearch').value = ''; applyFiltersAndRender(); });
+  document.getElementById('globalSearch').addEventListener('input', () => applyFiltersAndRender());
+  document.getElementById('sortBy').addEventListener('change', e => { sortCol = e.target.value; applyFiltersAndRender(); });
+  document.getElementById('sortDir').addEventListener('click', () => { sortDir = sortDir === 'asc' ? 'desc' : 'asc'; document.getElementById('sortDir').className = 'sort-dir ' + sortDir; applyFiltersAndRender(); });
+  document.getElementById('groupBy').addEventListener('change', e => { groupBy = e.target.value; applyFiltersAndRender(); });
+  document.getElementById('perPage').addEventListener('change', e => { perPage = parseInt(e.target.value); currentPage = 1; renderTable(); });
+  document.querySelectorAll('th[data-col]').forEach(th => { th.addEventListener('click', () => { const col = th.dataset.col; sortCol = col; sortDir = sortDir === 'asc' ? 'desc' : 'asc'; document.getElementById('sortBy').value = col; document.getElementById('sortDir').className = 'sort-dir ' + sortDir; applyFiltersAndRender(); }); });
+}
+
+function applyFiltersAndRender(){
+  const globalSearch = document.getElementById('globalSearch').value.toLowerCase();
+  const formData = new FormData(document.getElementById('filterForm'));
+  const filters = {};
+  for(let [k,v] of formData.entries()) if(v && v.trim()) filters[k] = v.trim();
+  
+  filteredRows = allRows.filter(row => {
+    const d = row.dataset;
+    if(globalSearch){
+      const searchText = `${d.name} ${d.father} ${d.mother} ${d.roll} ${d.reg} ${d.email} ${d.mobile_number} ${d.session}`.toLowerCase();
+      if(!searchText.includes(globalSearch)) return false;
+    }
+    if(filters.name && !d.name.toLowerCase().includes(filters.name.toLowerCase())) return false;
+    if(filters.father_name && !d.father.toLowerCase().includes(filters.father_name.toLowerCase())) return false;
+    if(filters.mother_name && !d.mother.toLowerCase().includes(filters.mother_name.toLowerCase())) return false;
+    if(filters.roll && d.roll !== filters.roll) return false;
+    if(filters.reg && d.reg !== filters.reg) return false;
+    if(filters.semester && d.semester !== filters.semester) return false;
+    if(filters.session && !d.session.toLowerCase().includes(filters.session.toLowerCase())) return false;
+    if(filters.shift && d.shift !== filters.shift) return false;
+    if(filters.section && !d.section.toLowerCase().includes(filters.section.toLowerCase())) return false;
+    if(filters.gender && d.gender !== filters.gender) return false;
+    if(filters.blood_group && d.blood_group !== filters.blood_group) return false;
+    if(filters.religion && !d.religion.toLowerCase().includes(filters.religion.toLowerCase())) return false;
+    if(filters.nationality && !d.nationality.toLowerCase().includes(filters.nationality.toLowerCase())) return false;
+    if(filters.email && !d.email.toLowerCase().includes(filters.email.toLowerCase())) return false;
+    if(filters.mobile_number && !d.mobile_number.includes(filters.mobile_number)) return false;
+    return true;
+  });
+  
+  filteredRows.sort((a,b) => {
+    let av = a.dataset[sortCol] || '', bv = b.dataset[sortCol] || '';
+    if(['roll','reg','semester'].includes(sortCol)){
+      av = parseInt(av) || 0; bv = parseInt(bv) || 0;
+      return sortDir === 'asc' ? av - bv : bv - av;
+    }
+    return sortDir === 'asc' ? av.localeCompare(bv) : bv.localeCompare(av);
+  });
+  
+  currentPage = 1;
+  renderTable();
+  renderActiveTags(filters);
+}
+
+function renderTable(){
+  const tbody = document.getElementById('tableBody');
+  const total = filteredRows.length;
+  document.getElementById('total-shown').textContent = total;
+  if(total === 0){ tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:2rem;"><i class="fas fa-search"></i> No students match</td></tr>'; document.getElementById('showing-count').textContent = 0; renderPagination(0); return; }
+  allRows.forEach(r => r.style.display = 'none');
+  tbody.innerHTML = '';
+  const start = (currentPage-1)*perPage;
+  const end = Math.min(start+perPage, total);
+  const pageRows = filteredRows.slice(start, end);
+  if(groupBy){
+    const groups = {};
+    pageRows.forEach(row => { let key = row.dataset[groupBy] || '—'; if(groupBy === 'gender') key = row.dataset.genderDisplay || key; if(!groups[key]) groups[key] = []; groups[key].push(row); });
+    const groupLabels = { semester:'Semester', shift:'Shift', section:'Section', session:'Session', gender:'Gender', blood_group:'Blood', religion:'Religion' };
+    Object.keys(groups).sort().forEach(key => { const gh = document.createElement('tr'); gh.className = 'group-header'; gh.innerHTML = `<td colspan="9"><i class="fas fa-folder-open"></i> ${groupLabels[groupBy] || groupBy}: ${key} (${groups[key].length})</td>`; tbody.appendChild(gh); groups[key].forEach(row => { tbody.appendChild(row); row.style.display = ''; }); });
+  } else { pageRows.forEach(row => { tbody.appendChild(row); row.style.display = ''; }); }
+  document.getElementById('showing-count').textContent = `${start+1}–${end}`;
+  renderPagination(total);
+}
+
+function renderPagination(total){
+  const totalPages = Math.ceil(total/perPage);
+  document.getElementById('pageInfo').innerHTML = `Page ${currentPage} of ${totalPages||1}`;
+  const container = document.getElementById('pageBtns'); if(!container) return;
+  container.innerHTML = '';
+  const addBtn = (label, page, active=false, disabled=false) => { const btn = document.createElement('button'); btn.className = 'page-btn' + (active ? ' active' : ''); btn.textContent = label; if(disabled) btn.disabled = true; else btn.addEventListener('click', () => { currentPage = page; renderTable(); }); container.appendChild(btn); };
+  addBtn('«', 1, false, currentPage===1);
+  for(let i=Math.max(1,currentPage-2); i<=Math.min(totalPages,currentPage+2); i++) addBtn(i, i, i===currentPage);
+  addBtn('»', totalPages, false, currentPage===totalPages);
+}
+
+function renderActiveTags(filters){
+  const container = document.getElementById('activeTags');
+  container.innerHTML = '';
+  const labelMap = { name:'Name', father_name:'Father', roll:'Roll', reg:'Reg', semester:'Semester', session:'Session', shift:'Shift', section:'Section', gender:'Gender', blood_group:'Blood', religion:'Religion' };
+  Object.entries(filters).forEach(([key,val]) => { const tag = document.createElement('div'); tag.className = 'filter-tag'; tag.innerHTML = `<i class="fas fa-tag"></i> ${labelMap[key]||key}: ${val} <button>✕</button>`; tag.querySelector('button').onclick = () => { const input = document.querySelector(`[name="${key}"]`); if(input) input.value = ''; applyFiltersAndRender(); }; container.appendChild(tag); });
+}
+
+function showStudentDetails(row){
+  const d = row.dataset;
+  const modal = document.getElementById('studentModal');
+  const modalBody = document.getElementById('modalBody');
+  let photoHtml = d.photoUrl ? `<img src="${d.photoUrl}" class="profile-img-large" alt="${d.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><div class="profile-img-large" style="display:none;">${(d.name?.charAt(0) || 'S').toUpperCase()}</div>` : `<div class="profile-img-large">${(d.name?.charAt(0) || 'S').toUpperCase()}</div>`;
+  modalBody.innerHTML = `
+    <div class="profile-section">${photoHtml}<div class="profile-info"><h3>${d.name || '—'}</h3><div class="badge-group"><span class="profile-badge"><i class="fas fa-id-card"></i> Roll: ${d.roll || '—'}</span><span class="profile-badge"><i class="fas fa-registered"></i> Reg: ${d.reg || '—'}</span></div></div></div>
+    <div class="detail-section"><div class="detail-section-title">Personal</div><div class="detail-grid"><div class="detail-card"><div class="detail-label">Father</div><div class="detail-value">${d.father || '—'}</div></div><div class="detail-card"><div class="detail-label">Mother</div><div class="detail-value">${d.mother || '—'}</div></div><div class="detail-card"><div class="detail-label">DOB</div><div class="detail-value">${d.dobFormatted || '—'}</div></div><div class="detail-card"><div class="detail-label">Gender</div><div class="detail-value">${d.genderDisplay || d.gender || '—'}</div></div><div class="detail-card"><div class="detail-label">Blood</div><div class="detail-value">${d.blood_group || '—'}</div></div><div class="detail-card"><div class="detail-label">Nationality</div><div class="detail-value">${d.nationality || 'Bangladeshi'}</div></div><div class="detail-card"><div class="detail-label">Religion</div><div class="detail-value">${d.religion || '—'}</div></div></div></div>
+    <div class="detail-section"><div class="detail-section-title">Academic</div><div class="detail-grid"><div class="detail-card"><div class="detail-label">Semester</div><div class="detail-value">${d.semester || '—'}</div></div><div class="detail-card"><div class="detail-label">Session</div><div class="detail-value">${d.session || '—'}</div></div><div class="detail-card"><div class="detail-label">Shift</div><div class="detail-value">${d.shift || '—'}</div></div><div class="detail-card"><div class="detail-label">Section</div><div class="detail-value">${d.section || '—'}</div></div></div></div>
+    <div class="detail-section"><div class="detail-section-title">Contact</div><div class="detail-grid"><div class="detail-card"><div class="detail-label">Mobile</div><div class="detail-value">${d.mobile_number || '—'}</div></div><div class="detail-card"><div class="detail-label">Alternate</div><div class="detail-value">${d.alternate_mobile || '—'}</div></div><div class="detail-card full-width"><div class="detail-label">Email</div><div class="detail-value">${d.email || '—'}</div></div><div class="detail-card full-width"><div class="detail-label">Present Address</div><div class="detail-value">${d.present_address || '—'}</div></div><div class="detail-card full-width"><div class="detail-label">Permanent Address</div><div class="detail-value">${d.permanent_address || '—'}</div></div></div></div>
+    <div class="detail-section"><div class="detail-section-title">Emergency</div><div class="detail-grid"><div class="detail-card"><div class="detail-label">Contact Person</div><div class="detail-value">${d.emergency_contact_name || '—'}</div></div><div class="detail-card"><div class="detail-label">Contact Number</div><div class="detail-value">${d.emergency_contact_number || '—'}</div></div></div></div>`;
+  modal.classList.add('active');
+}
+document.querySelector('.close-modal')?.addEventListener('click', () => document.getElementById('studentModal').classList.remove('active'));
+document.getElementById('studentModal')?.addEventListener('click', (e) => { if(e.target === document.getElementById('studentModal')) document.getElementById('studentModal').classList.remove('active'); });
+</script>
+</body>
+</html>

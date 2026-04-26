@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>কুষ্টিয়া পলিটেকনিক ইনস্টিটিউট | পোর্টাল লগইন</title>
+  <!-- Professional font pairing: Inter for UI, Playfair Display for refinement -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
+  <!-- Font Awesome 6 (free icons) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <style>
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --navy-deep: #0B2B40;
+      --navy-rich: #0F3B4C;
+      --accent-gold: #C9A03D;
+      --accent-gold-dim: #B48C3A;
+      --ivory: #FDFBF7;
+      --stone-light: #F0EFEA;
+      --charcoal-soft: #2C3E45;
+      --gray-mid: #5B6F7A;
+      --error-bg: #FEF2F0;
+      --error-border: #D9534F;
+      --shadow-sm: 0 8px 20px rgba(0, 0, 0, 0.03), 0 2px 6px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 20px 35px -12px rgba(0, 0, 0, 0.08);
+      --transition-default: all 0.25s ease;
+    }
+
+    body {
+      background-color: var(--ivory);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .login-container {
+      display: flex;
+      width: 100%;
+      max-width: 1360px;
+      min-height: 720px;
+      background: var(--ivory);
+      border-radius: 32px;
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+      margin: 2rem;
+      transition: all 0.3s;
+    }
+
+    /* LEFT BRAND PANEL — with dynamic carousel integration */
+    .brand-panel {
+      flex: 1.1;
+      background: linear-gradient(145deg, var(--navy-deep) 0%, var(--navy-rich) 100%);
+      padding: 3rem 2.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      isolation: isolate;
+      overflow-y: auto;
+    }
+
+    .brand-panel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(circle at 20% 40%, rgba(201, 160, 61, 0.08) 2%, transparent 2.5%);
+      background-size: 28px 28px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .brand-header {
+      position: relative;
+      z-index: 2;
+    }
+
+    .institute-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(2px);
+      padding: 0.5rem 1rem;
+      border-radius: 60px;
+      width: fit-content;
+      margin-bottom: 2rem;
+      border: 0.5px solid rgba(201, 160, 61, 0.3);
+    }
+
+    .badge-icon {
+      color: var(--accent-gold);
+      font-size: 1rem;
+    }
+
+    .badge-text {
+      font-size: 0.7rem;
+      letter-spacing: 0.12rem;
+      text-transform: uppercase;
+      font-weight: 500;
+      color: var(--stone-light);
+    }
+
+    .institute-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.9rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: white;
+      line-height: 1.25;
+      margin-bottom: 0.75rem;
+    }
+
+    .institute-tagline {
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.8);
+      border-left: 2px solid var(--accent-gold);
+      padding-left: 1rem;
+      margin-top: 0.5rem;
+      font-weight: 400;
+    }
+
+    /* CAROUSEL STYLES — dynamic images from Django context */
+    .carousel-container {
+      position: relative;
+      z-index: 2;
+      margin: 1.5rem 0 1.2rem 0;
+      width: 100%;
+      border-radius: 20px;
+      overflow: hidden;
+      background: rgba(0, 0, 0, 0.25);
+      backdrop-filter: blur(3px);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+    }
+
+    .carousel-slides {
+      position: relative;
+      width: 100%;
+      padding-bottom: 66%; /* 3:2 aspect ratio */
+      background-color: #0a1f2a;
+    }
+
+    .carousel-slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      transition: opacity 0.9s ease-in-out;
+      object-fit: cover;
+      border-radius: 0;
+    }
+
+    .carousel-slide.active {
+      opacity: 1;
+      z-index: 2;
+    }
+
+    .carousel-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .carousel-dots {
+      position: absolute;
+      bottom: 12px;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      z-index: 10;
+    }
+
+    .carousel-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.5);
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+
+    .carousel-dot.active-dot {
+      background: var(--accent-gold);
+      width: 20px;
+      border-radius: 6px;
+    }
+
+    .hero-quote {
+      position: relative;
+      z-index: 2;
+      margin-top: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .quote-text {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      font-weight: 400;
+      line-height: 1.3;
+      color: white;
+      font-style: italic;
+    }
+
+    .quote-author {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.2rem;
+      color: var(--accent-gold);
+      margin-top: 0.8rem;
+    }
+
+    /* RIGHT FORM PANEL */
+    .form-panel {
+      flex: 1;
+      background: var(--ivory);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 2rem;
+    }
+
+    .form-card {
+      width: 100%;
+      max-width: 420px;
+    }
+
+    .form-header {
+      margin-bottom: 2rem;
+    }
+
+    .form-header h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 500;
+      color: var(--navy-deep);
+      letter-spacing: -0.01em;
+    }
+
+    .form-header p {
+      color: var(--gray-mid);
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+    }
+
+    /* Django messages */
+    .messages {
+      margin-bottom: 1.75rem;
+    }
+
+    .msg {
+      font-size: 0.8rem;
+      padding: 0.7rem 1rem;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--error-bg);
+      border-left: 4px solid var(--error-border);
+      color: #B13E3E;
+      margin-bottom: 0.5rem;
+    }
+
+    .msg i {
+      font-size: 0.9rem;
+    }
+
+    .msg.error {
+      background: #FEF2F0;
+    }
+
+    .msg.success {
+      background: #EFFAF3;
+      border-left-color: #2E7D64;
+      color: #1F5E4A;
+    }
+
+    /* form fields */
+    .input-group {
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+
+    .input-group label {
+      display: block;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--charcoal-soft);
+      margin-bottom: 0.5rem;
+    }
+
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-wrapper i {
+      position: absolute;
+      left: 1rem;
+      color: var(--gray-mid);
+      font-size: 1rem;
+      transition: color 0.2s;
+    }
+
+    .input-wrapper input {
+      width: 100%;
+      padding: 0.9rem 1rem 0.9rem 2.5rem;
+      font-family: 'Inter', monospace;
+      font-size: 0.9rem;
+      border: 1px solid #E2E2E0;
+      background-color: white;
+      border-radius: 16px;
+      outline: none;
+      transition: var(--transition-default);
+      color: var(--navy-deep);
+      font-weight: 450;
+    }
+
+    .input-wrapper input:focus {
+      border-color: var(--accent-gold);
+      box-shadow: 0 0 0 3px rgba(201, 160, 61, 0.2);
+    }
+
+    .input-wrapper input::placeholder {
+      color: #C5C5C0;
+      font-weight: 400;
+    }
+
+    .login-btn {
+      width: 100%;
+      background: var(--navy-deep);
+      border: none;
+      padding: 0.9rem 1.5rem;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      letter-spacing: 0.03em;
+      font-family: 'Inter', sans-serif;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 0.5rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    }
+
+    .login-btn i {
+      font-size: 0.9rem;
+      transition: transform 0.2s;
+    }
+
+    .login-btn:hover {
+      background: var(--navy-rich);
+      transform: translateY(-1px);
+      box-shadow: 0 12px 22px -10px rgba(11, 43, 64, 0.2);
+    }
+
+    .login-btn:hover i {
+      transform: translateX(3px);
+    }
+
+    .trust-badge {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-top: 1.2rem;
+      font-size: 0.65rem;
+      color: var(--gray-mid);
+      letter-spacing: 0.02em;
+    }
+
+    .trust-badge span i {
+      margin-right: 0.3rem;
+      font-size: 0.7rem;
+    }
+
+    .form-footer {
+      margin-top: 2rem;
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--gray-mid);
+      border-top: 1px solid #E8E6E0;
+      padding-top: 1.5rem;
+    }
+
+    .form-footer a {
+      color: var(--accent-gold-dim);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .form-footer a:hover {
+      color: var(--navy-rich);
+      text-decoration: underline;
+    }
+
+    @media (max-width: 880px) {
+      .login-container {
+        flex-direction: column;
+        max-width: 560px;
+        margin: 1rem;
+        border-radius: 28px;
+      }
+      .brand-panel {
+        padding: 2rem;
+      }
+      .hero-quote .quote-text {
+        font-size: 1.1rem;
+      }
+      .form-panel {
+        padding: 2rem 1.5rem;
+      }
+      .carousel-container {
+        margin: 1rem 0;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .institute-name {
+        font-size: 1.4rem;
+      }
+      .form-header h2 {
+        font-size: 1.7rem;
+      }
+      .login-container {
+        margin: 0.75rem;
+      }
+    }
+
+    .form-card {
+      animation: fadeSlide 0.4s ease-out;
+    }
+
+    @keyframes fadeSlide {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="login-container">
+  <!-- LEFT PANEL: Institute Branding + Dynamic Carousel from login_page_images -->
+  <div class="brand-panel">
+    <div class="brand-header">
+      <div class="institute-badge">
+        <i class="fas fa-university badge-icon"></i>
+        <span class="badge-text">EST. 1964</span>
+      </div>
+      <div class="institute-name">
+        কুষ্টিয়া পলিটেকনিক ইনস্টিটিউট, কুষ্টিয়া
+      </div>
+      <div class="institute-tagline">
+        প্রথম শিফট | কম্পিউটার সায়েন্স অ্যান্ড টেকনোলজি
+      </div>
+    </div>
+
+    <!-- 
+      ==================================================
+      DYNAMIC CAROUSEL FROM DJANGO CONTEXT (login_page_images)
+      This carousel automatically displays all images passed from the view.
+      If login_page_images is empty or not provided, fallback images are shown.
+      Auto-rotation (4 sec), hover pause, dot navigation.
+      ==================================================
+    -->
+    <div class="carousel-container">
+      <div class="carousel-slides" id="instituteCarousel">
+        {% if login_page_images %}
+          {% for img_obj in login_page_images %}
+            <div class="carousel-slide" data-index="{{ forloop.counter0 }}">
+             
+             
+                <img src="{{ img_obj.login_page_image.url }}" alt="{{ img_obj.alt|default:'Kushtia Polytechnic Institute Visual' }}">
+              
+            </div>
+          {% endfor %}
+        {% else %}
+          <!-- Professional fallback images (only shown if context is empty) -->
+          <div class="carousel-slide" data-index="0">
+            <img src="https://placehold.co/800x600/1F4A5C/FFFFFF?text=Kushtia+Polytechnic+Campus" alt="Campus View">
+          </div>
+          <div class="carousel-slide" data-index="1">
+            <img src="https://placehold.co/800x600/2C5F6E/FFFFFF?text=Computer+Lab+%7C+CST" alt="Computer Lab">
+          </div>
+          <div class="carousel-slide" data-index="2">
+            <img src="https://placehold.co/800x600/3F6F7A/FFFFFF?text=Academic+Workshop" alt="Workshop">
+          </div>
+          <div class="carousel-slide" data-index="3">
+            <img src="https://placehold.co/800x600/2A5C66/FFFFFF?text=Central+Library" alt="Library">
+          </div>
+          <div class="carousel-slide" data-index="4">
+            <img src="https://placehold.co/800x600/18505E/FFFFFF?text=Practical+Training" alt="Training Session">
+          </div>
+        {% endif %}
+      </div>
+      <div class="carousel-dots" id="carouselDots"></div>
+    </div>
+
+    <div class="hero-quote">
+      <div class="quote-text">
+        “একটাই লক্ষ্য হতে হবে দক্ষ”
+      </div>
+      <div class="quote-author">
+        — প্রযুক্তিতে অগ্রগতি, দক্ষতায় সেরা
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL: Login Form -->
+  <div class="form-panel">
+    <div class="form-card">
+      <div class="form-header">
+        <h2>সাইন ইন করুন</h2>
+        <p>প্রাতিষ্ঠানিক একাউন্ট দিয়ে লগইন করুন</p>
+      </div>
+
+      {% if messages %}
+      <div class="messages">
+        {% for message in messages %}
+        <div class="msg {{ message.tags }}">
+          <i class="fas {% if 'error' in message.tags %}fa-exclamation-triangle{% else %}fa-circle-info{% endif %}"></i>
+          <span>{{ message }}</span>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <form method="POST" action="{% url 'login' %}">
+        {% csrf_token %}
+
+        <div class="input-group">
+          <label for="identifier"><i class="far fa-id-card" style="margin-right: 6px;"></i> ইউজারনাম বা ইমেইল</label>
+          <div class="input-wrapper">
+            <i class="fas fa-envelope"></i>
+            <input
+              type="text"
+              id="identifier"
+              name="identifier"
+              placeholder="student@kpi.edu.bd"
+              autocomplete="username"
+              required
+            />
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label for="password"><i class="fas fa-lock"></i> পাসওয়ার্ড</label>
+          <div class="input-wrapper">
+            <i class="fas fa-key"></i>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              placeholder="••••••••"
+              autocomplete="current-password"
+              required
+            />
+          </div>
+        </div>
+
+        <button type="submit" class="login-btn">
+          <span>প্রবেশ করুন →</span>
+          <i class="fas fa-arrow-right"></i>
+        </button>
+
+        <div class="trust-badge">
+          <span><i class="fas fa-shield-alt"></i> এনক্রিপ্টেড সংযোগ</span>
+          <span><i class="fas fa-user-graduate"></i> শিক্ষার্থী ও শিক্ষক</span>
+          <span><i class="fas fa-headset"></i> হেল্পডেস্ক</span>
+        </div>
+      </form>
+
+      <div class="form-footer">
+        <i class="fas fa-question-circle"></i> সহায়তা প্রয়োজন? 
+        <a href="#">আইটি সাপোর্ট সেন্টার</a> &nbsp;|&nbsp;
+        <a href="#">একাউন্ট পুনরুদ্ধার</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Carousel Auto-Rotation & Dot Synchronization (fully dynamic) -->
+<script>
+  (function() {
+    const slidesContainer = document.getElementById('instituteCarousel');
+    if (!slidesContainer) return;
+    
+    let slides = Array.from(document.querySelectorAll('.carousel-slide'));
+    const dotsContainer = document.getElementById('carouselDots');
+    let currentIndex = 0;
+    let autoInterval;
+    const intervalTime = 3000;
+
+    // Helper: activate first slide if none has active class
+    function initializeActiveSlide() {
+      const hasActive = slides.some(slide => slide.classList.contains('active'));
+      if (!hasActive && slides.length) {
+        slides[0].classList.add('active');
+        currentIndex = 0;
+      } else {
+        // find currently active index
+        const activeIdx = slides.findIndex(slide => slide.classList.contains('active'));
+        if (activeIdx !== -1) currentIndex = activeIdx;
+        else if (slides.length) {
+          slides[0].classList.add('active');
+          currentIndex = 0;
+        }
+      }
+    }
+
+    function createDots() {
+      if (!dotsContainer) return;
+      dotsContainer.innerHTML = '';
+      slides.forEach((_, idx) => {
+        const dot = document.createElement('div');
+        dot.classList.add('carousel-dot');
+        if (idx === currentIndex) dot.classList.add('active-dot');
+        dot.addEventListener('click', () => {
+          stopAutoRotation();
+          goToSlide(idx);
+          startAutoRotation();
+        });
+        dotsContainer.appendChild(dot);
+      });
+    }
+
+    function goToSlide(index) {
+      if (!slides.length) return;
+      if (index < 0) index = 0;
+      if (index >= slides.length) index = 0;
+      slides.forEach((slide, i) => {
+        slide.classList.remove('active');
+      });
+      slides[index].classList.add('active');
+      currentIndex = index;
+      updateDotsActive();
+    }
+
+    function updateDotsActive() {
+      if (!dotsContainer) return;
+      const dots = document.querySelectorAll('.carousel-dot');
+      dots.forEach((dot, i) => {
+        if (i === currentIndex) {
+          dot.classList.add('active-dot');
+        } else {
+          dot.classList.remove('active-dot');
+        }
+      });
+    }
+
+    function nextSlide() {
+      if (!slides.length) return;
+      let next = currentIndex + 1;
+      if (next >= slides.length) next = 0;
+      goToSlide(next);
+    }
+
+    function startAutoRotation() {
+      if (autoInterval) clearInterval(autoInterval);
+      if (slides.length <= 1) return; // no need interval for single image
+      autoInterval = setInterval(() => {
+        nextSlide();
+      }, intervalTime);
+    }
+
+    function stopAutoRotation() {
+      if (autoInterval) {
+        clearInterval(autoInterval);
+        autoInterval = null;
+      }
+    }
+
+    // Ensure slides are properly collected after dynamic rendering
+    function refreshSlides() {
+      slides = Array.from(document.querySelectorAll('.carousel-slide'));
+      if (slides.length) {
+        initializeActiveSlide();
+        if (dotsContainer) createDots();
+        startAutoRotation();
+      }
+    }
+
+    // Hover pause on carousel container for better UX
+    const carouselContainer = document.querySelector('.carousel-container');
+    if (carouselContainer) {
+      carouselContainer.addEventListener('mouseenter', stopAutoRotation);
+      carouselContainer.addEventListener('mouseleave', startAutoRotation);
+    }
+
+    // MutationObserver to handle if slides are added dynamically (edge case)
+    const observer = new MutationObserver(() => {
+      refreshSlides();
+    });
+    if (slidesContainer) {
+      observer.observe(slidesContainer, { childList: true, subtree: true });
+    }
+
+    // Initial setup
+    refreshSlides();
+
+    window.addEventListener('beforeunload', () => {
+      if (autoInterval) clearInterval(autoInterval);
+    });
+  })();
+</script>
+
+
+</body>
+</html>

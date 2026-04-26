@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>কুষ্টিয়া পলিটেকনিক | স্টুডেন্ট ডাটা আপলোড</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        :root {
+            --primary-navy: #0B2B40;
+            --accent-gold: #C9A03D;
+            --bg-light: #F8F6F2;
+            --card-white: #FFFFFF;
+            --text-dark: #1E2F3A;
+            --text-muted: #5B6F7A;
+            --border-light: #E8E6E1;
+            --success-green: #2B7A4B;
+            --error-red: #C23B22;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #F0EDE6 0%, #FDFBF7 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .institute-header {
+            background: var(--primary-navy);
+            border-radius: 32px;
+            padding: 2rem 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 20px 32px -12px rgba(0,0,0,0.12);
+        }
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .logo-icon {
+            width: 56px;
+            height: 56px;
+            background: rgba(201,160,61,0.15);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: var(--accent-gold);
+        }
+        .institute-title h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: white;
+        }
+        .institute-title p {
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.7);
+            margin-top: 0.25rem;
+        }
+        .badge-area {
+            background: rgba(255,255,255,0.08);
+            padding: 0.5rem 1.25rem;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            color: var(--accent-gold);
+        }
+        .upload-card {
+            background: var(--card-white);
+            border-radius: 32px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+        .card-header {
+            padding: 1.75rem 2rem;
+            border-bottom: 1px solid var(--border-light);
+        }
+        .card-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: var(--primary-navy);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .upload-area {
+            padding: 2rem;
+            background: var(--bg-light);
+        }
+        .drop-zone {
+            border: 2px dashed var(--accent-gold);
+            border-radius: 28px;
+            background: rgba(201,160,61,0.02);
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .drop-zone:hover {
+            border-color: #b38b2e;
+            background: rgba(201,160,61,0.05);
+        }
+        .upload-icon {
+            font-size: 3rem;
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+        }
+        .file-input-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--primary-navy);
+            color: white;
+            padding: 0.7rem 1.5rem;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            margin-top: 0.5rem;
+        }
+        #fileInput {
+            display: none;
+        }
+        .file-info {
+            margin-top: 1rem;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        .col-requirements {
+            padding: 1.5rem 2rem;
+            background: white;
+            border-bottom: 1px solid var(--border-light);
+        }
+        .req-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+        .req-badge {
+            background: var(--bg-light);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-family: monospace;
+            border-left: 3px solid var(--accent-gold);
+        }
+        .preview-section {
+            padding: 1.5rem 2rem;
+        }
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: 20px;
+            border: 1px solid var(--border-light);
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .preview-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.7rem;
+        }
+        .preview-table th {
+            background: var(--primary-navy);
+            color: white;
+            padding: 0.8rem;
+            position: sticky;
+            top: 0;
+            white-space: nowrap;
+        }
+        .preview-table td {
+            padding: 0.6rem 0.8rem;
+            border-bottom: 1px solid var(--border-light);
+        }
+        .action-area {
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            border-top: 1px solid var(--border-light);
+        }
+        .btn-upload {
+            background: var(--accent-gold);
+            border: none;
+            padding: 0.9rem 2rem;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .btn-upload:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .btn-reset {
+            background: transparent;
+            border: 1px solid var(--border-light);
+            padding: 0.9rem 1.8rem;
+            border-radius: 40px;
+            cursor: pointer;
+        }
+        .message-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.8rem 1.2rem;
+            border-radius: 16px;
+            margin: 1rem 2rem;
+            font-size: 0.8rem;
+            animation: slideIn 0.3s ease-out;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .message-item.success {
+            background: #E6F4EA;
+            border-left: 4px solid var(--success-green);
+            color: #1B5E3F;
+        }
+        .message-item.error {
+            background: #FDEFEE;
+            border-left: 4px solid var(--error-red);
+            color: #A5301A;
+        }
+        .sample-download {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+        .sample-link {
+            color: var(--accent-gold);
+            text-decoration: none;
+            font-size: 0.75rem;
+        }
+        .loading-spinner {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid var(--primary-navy);
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+     
+    <div class="institute-header">
+       
+        <div class="header-content">
+            <div class="logo-area">
+                <div class="logo-icon"><i class="fas fa-graduation-cap"></i></div>
+                <div class="institute-title">
+                    <h1><a href="/" style="text-decoration: none;">কুষ্টিয়া পলিটেকনিক ইনস্টিটিউট</a></h1>
+                    <p>Kushtia Polytechnic Institute | Student Management System</p>
+                </div>
+            </div>
+            <div class="badge-area"><i class="fas fa-database"></i> Bulk Upload Portal</div>
+        </div>
+    </div>
+
+    <div class="upload-card">
+        <div class="card-header">
+            <h2><i class="fas fa-cloud-upload-alt"></i> Student Data Upload</h2>
+            <p>Upload CSV, Excel (XLSX), or JSON file. Preview data before submitting.</p>
+        </div>
+
+        <div class="upload-area">
+            <div id="dropZone" class="drop-zone">
+                <div class="upload-icon"><i class="fas fa-file-upload"></i></div>
+                <h3>Drag & Drop or Click to Browse</h3>
+                <p>Supports .CSV, .XLSX, .JSON (Max 100MB)</p>
+                <label class="file-input-label" for="fileInput">
+                    <i class="fas fa-folder-open"></i> Select File
+                </label>
+                <input type="file" id="fileInput" accept=".csv,.xlsx,.json">
+                <div id="fileInfo" class="file-info" style="display: none;">
+                    <i class="fas fa-file-alt"></i> <strong id="selectedFileName"></strong> 
+                    (<span id="fileSize"></span>) - <span id="rowCount"></span> rows
+                </div>
+            </div>
+        </div>
+
+        <div class="col-requirements">
+            <div class="req-title"><strong>Required Columns:</strong></div>
+            <div class="req-badges">
+                <span class="req-badge">name</span> <span class="req-badge">father_name</span> <span class="req-badge">mother_name</span>
+                <span class="req-badge">date_of_birth</span> <span class="req-badge">gender</span> <span class="req-badge">roll</span>
+                <span class="req-badge">reg</span> <span class="req-badge">email</span> <span class="req-badge">mobile_number</span>
+                <span class="req-badge">session</span> <span class="req-badge">semester</span> <span class="req-badge">shift</span>
+            </div>
+            <div style="font-size: 0.7rem; color: var(--text-muted);">
+                <i class="fas fa-info-circle"></i> Default values: gender='O', shift='Day', nationality='Bangladeshi'
+            </div>
+        </div>
+
+        <div id="previewSection" class="preview-section" style="display: none;">
+            <div class="req-title"><strong>Data Preview (First 10 rows):</strong></div>
+            <div class="table-wrapper">
+                <table class="preview-table" id="previewTable">
+                    <thead id="previewHeader"></thead>
+                    <tbody id="previewBody"></tbody>
+                </table>
+            </div>
+            <div id="validationWarning" style="margin-top: 0.8rem; font-size: 0.7rem;"></div>
+        </div>
+
+        <div id="messageContainer"></div>
+
+        <div class="action-area">
+            <button type="button" class="btn-reset" id="resetBtn"><i class="fas fa-undo-alt"></i> Reset</button>
+            <button type="button" class="btn-upload" id="submitBtn" disabled>
+                <i class="fas fa-upload"></i> Upload to Database
+            </button>
+        </div>
+    </div>
+
+    <div class="sample-download">
+        <a href="#" id="downloadSampleBtn" class="sample-link"><i class="fas fa-download"></i> Download Sample CSV</a>
+    </div>
+</div>
+
+<script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
+<script>
+    let selectedFile = null;
+    let parsedData = [];
+
+    const fileInput = document.getElementById('fileInput');
+    const dropZone = document.getElementById('dropZone');
+    const submitBtn = document.getElementById('submitBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const messageContainer = document.getElementById('messageContainer');
+    const previewSection = document.getElementById('previewSection');
+    const validationWarning = document.getElementById('validationWarning');
+
+    function getCSRFToken() {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, 10) === 'csrftoken=') {
+                    cookieValue = decodeURIComponent(cookie.substring(10));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    function showMessage(message, type) {
+        const msgDiv = document.createElement('div');
+        msgDiv.className = `message-item ${type}`;
+        msgDiv.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle'}"></i><span>${escapeHtml(message)}</span>`;
+        messageContainer.appendChild(msgDiv);
+        setTimeout(() => msgDiv.remove(), 6000);
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    function parseFile(file) {
+        return new Promise((resolve, reject) => {
+            const ext = file.name.split('.').pop().toLowerCase();
+            
+            if (ext === 'json') {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        const data = JSON.parse(e.target.result);
+                        const rows = Array.isArray(data) ? data : [data];
+                        resolve({ data: rows, headers: Object.keys(rows[0] || {}) });
+                    } catch (err) {
+                        reject(new Error('Invalid JSON format'));
+                    }
+                };
+                reader.readAsText(file);
+            } else {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        const data = new Uint8Array(e.target.result);
+                        const workbook = XLSX.read(data, { type: 'array' });
+                        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+                        const rows = XLSX.utils.sheet_to_json(sheet);
+                        resolve({ data: rows, headers: Object.keys(rows[0] || {}) });
+                    } catch (err) {
+                        reject(new Error('Error parsing file'));
+                    }
+                };
+                reader.readAsArrayBuffer(file);
+            }
+        });
+    }
+
+    function handleFile(file) {
+        if (!file) return;
+        selectedFile = file;
+        
+        document.getElementById('selectedFileName').textContent = file.name;
+        document.getElementById('fileSize').textContent = (file.size / 1024 / 1024).toFixed(2) + ' MB';
+        document.getElementById('fileInfo').style.display = 'block';
+        document.getElementById('rowCount').textContent = 'loading...';
+
+        parseFile(file).then(({ data, headers }) => {
+            parsedData = data;
+            document.getElementById('rowCount').textContent = data.length;
+            
+            // Show preview
+            const requiredColumns = ['name', 'roll', 'reg', 'email'];
+            const missing = requiredColumns.filter(col => !headers.includes(col));
+            
+            if (missing.length) {
+                validationWarning.innerHTML = `<i class="fas fa-exclamation-triangle"></i> Missing: ${missing.join(', ')}`;
+                validationWarning.style.color = '#C23B22';
+                submitBtn.disabled = true;
+            } else {
+                validationWarning.innerHTML = '<i class="fas fa-check-circle"></i> All required columns present!';
+                validationWarning.style.color = '#2B7A4B';
+                submitBtn.disabled = false;
+            }
+            
+            // Render table
+            const previewRows = data.slice(0, 10);
+            document.getElementById('previewHeader').innerHTML = '<tr>' + headers.map(h => `<th>${escapeHtml(h)}</th>`).join('') + '</tr>';
+            document.getElementById('previewBody').innerHTML = previewRows.map(row => 
+                '<tr>' + headers.map(h => `<td>${escapeHtml(String(row[h] || ''))}</td>`).join('') + '</tr>'
+            ).join('');
+            previewSection.style.display = 'block';
+        }).catch(err => {
+            document.getElementById('rowCount').textContent = 'Error';
+            validationWarning.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${err.message}`;
+            validationWarning.style.color = '#C23B22';
+            submitBtn.disabled = true;
+        });
+    }
+
+    function uploadFile() {
+        if (!selectedFile) {
+            showMessage('Please select a file first', 'error');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('file', selectedFile);
+
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="loading-spinner"></span> Uploading...';
+
+        fetch(window.location.href, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': getCSRFToken()
+            }
+        })
+        .then(async response => {
+            const text = await response.text();
+            try {
+                return JSON.parse(text);
+            } catch (e) {
+                throw new Error('Server returned invalid response. Check console for details.');
+            }
+        })
+        .then(data => {
+            if (data.status === 'success') {
+                showMessage(data.message + ` (${data.count} students)`, 'success');
+                resetForm();
+            } else {
+                showMessage(data.message || 'Upload failed', 'error');
+            }
+        })
+        .catch(err => {
+            showMessage(err.message, 'error');
+        })
+        .finally(() => {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fas fa-upload"></i> Upload to Database';
+        });
+    }
+
+    function resetForm() {
+        fileInput.value = '';
+        selectedFile = null;
+        document.getElementById('fileInfo').style.display = 'none';
+        previewSection.style.display = 'none';
+        submitBtn.disabled = true;
+    }
+
+    fileInput.addEventListener('change', (e) => {
+        if (e.target.files.length) handleFile(e.target.files[0]);
+    });
+
+    dropZone.addEventListener('dragover', (e) => e.preventDefault());
+    dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+    });
+    dropZone.addEventListener('click', () => fileInput.click());
+
+    resetBtn.addEventListener('click', resetForm);
+    submitBtn.addEventListener('click', uploadFile);
+
+    function downloadSampleCSV() {
+        const headers = ['name', 'father_name', 'mother_name', 'date_of_birth', 'gender', 'blood_group', 'semester', 'roll', 'reg', 'session', 'shift', 'section', 'mobile_number', 'alternate_mobile', 'email', 'present_address', 'permanent_address', 'emergency_contact_name', 'emergency_contact_number', 'nationality', 'religion'];
+        const row = ['Rahim Uddin', 'Abdur Rahim', 'Fatema Begum', '2005-03-15', 'M', 'O+', '4', '101001', '2022123456', '2022-2023', 'Day', 'A', '01712345678', '01912345678', 'rahim@example.com', 'Kushtia', 'Kushtia', 'Abdur Rahim', '01712345678', 'Bangladeshi', 'Islam'];
+        const csv = [headers.join(','), row.map(c => `"${c}"`).join(',')].join('\n');
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'student_sample.csv';
+        link.click();
+        URL.revokeObjectURL(link.href);
+    }
+
+    document.getElementById('downloadSampleBtn').addEventListener('click', (e) => {
+        e.preventDefault();
+        downloadSampleCSV();
+    });
+</script>
+</body>
+</html>
