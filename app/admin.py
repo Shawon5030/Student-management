@@ -1,36 +1,43 @@
 from django.contrib import admin
-from .models import Students,Additional_information
 from django.utils.html import format_html
+from .models import Students, Additional_information
 
-admin.site.register(Additional_information)
 
+# Register Additional Information model
+@admin.register(Additional_information)
+class AdditionalInformationAdmin(admin.ModelAdmin):
+    list_display = ('id', 'login_page_image')
+
+
+# Students Admin
 @admin.register(Students)
 class StudentsAdmin(admin.ModelAdmin):
-    # List display - shows these columns in the admin list view
+
+    # Columns in list view
     list_display = (
-        'roll', 
-        'name', 
-        'semester', 
-        'section', 
-        'shift', 
+        'roll',
+        'name',
+        'semester',
+        'section',
+        'shift',
         'session',
-        'mobile_number', 
+        'mobile_number',
         'email',
-        'display_profile_picture'
+        'display_profile_picture',
     )
-    
-    # Search fields - allows searching by these fields
+
+    # Search
     search_fields = (
-        'name', 
-        'roll', 
-        'reg', 
-        'email', 
+        'name',
+        'roll',
+        'reg',
+        'email',
         'mobile_number',
         'father_name',
-        'mother_name'
+        'mother_name',
     )
-    
-    # Filters - adds filter sidebar
+
+    # Filters
     list_filter = (
         'semester',
         'section',
@@ -42,116 +49,119 @@ class StudentsAdmin(admin.ModelAdmin):
         'religion',
         'created_at',
     )
-    
-    # Date hierarchy - adds date-based drill-down navigation
+
+    # Date navigation
     date_hierarchy = 'created_at'
-    
-    # Default ordering
+
+    # Ordering
     ordering = ('-roll', '-semester')
-    
-    # Fields to make clickable in list display
+
+    # Clickable fields
     list_display_links = ('roll', 'name')
-    
-    # Number of items per page
+
+    # Pagination
     list_per_page = 25
-    
-    # Editable fields directly in list view
+
+    # Editable in list
     list_editable = ('semester', 'section', 'shift')
-    
-    # Fields to show in the detail form
+
+    # Form layout
     fieldsets = (
         ('Personal Information', {
             'fields': (
-                'name', 
-                'father_name', 
-                'mother_name', 
-                'date_of_birth', 
-                'gender', 
+                'name',
+                'father_name',
+                'mother_name',
+                'date_of_birth',
+                'gender',
                 'blood_group',
-                'profile_picture'
+                'profile_picture',
             )
         }),
         ('Academic Information', {
             'fields': (
-                'semester', 
-                'roll', 
-                'reg', 
-                'session', 
-                'shift', 
-                'section'
+                'semester',
+                'roll',
+                'reg',
+                'session',
+                'shift',
+                'section',
             ),
-            'classes': ('collapse',)  # Collapsible section
+            'classes': ('collapse',)
         }),
         ('Contact Information', {
             'fields': (
-                'mobile_number', 
-                'alternate_mobile', 
-                'email', 
-                'present_address', 
-                'permanent_address'
+                'mobile_number',
+                'alternate_mobile',
+                'email',
+                'present_address',
+                'permanent_address',
             )
         }),
         ('Emergency Contact', {
             'fields': (
-                'emergency_contact_name', 
-                'emergency_contact_number'
+                'emergency_contact_name',
+                'emergency_contact_number',
             ),
-            'classes': ('wide',)  # Wider layout
+            'classes': ('wide',)
         }),
         ('Other Information', {
             'fields': (
-                'nationality', 
-                'religion'
+                'nationality',
+                'religion',
             )
         }),
         ('Timestamps', {
             'fields': (
-                'created_at', 
-                'updated_at'
+                'created_at',
+                'updated_at',
             ),
-            'classes': ('collapse',)  # Collapsible section
+            'classes': ('collapse',)
         }),
     )
-    
-    # Readonly fields
+
+    # Readonly
     readonly_fields = ('created_at', 'updated_at')
-    
-    # Custom method to display profile picture thumbnail
+
+    # ✅ FIXED method (no more TypeError)
     def display_profile_picture(self, obj):
         if obj.profile_picture:
-            return format_html('<img src="{}" width="50" height="50" style="border-radius: 50%;" />', obj.profile_picture.url)
-        return format_html('<span style="color: gray;">No Photo</span>')
-    
+            return format_html(
+                '<img src="{}" width="50" height="50" style="border-radius:50%;" />',
+                obj.profile_picture.url
+            )
+        return "No Photo"
+
     display_profile_picture.short_description = 'Photo'
-    
-    # Bulk actions (default actions are already there, you can add custom ones)
+
+    # Bulk actions
     actions = ['make_morning_shift', 'make_day_shift']
-    
+
     def make_morning_shift(self, request, queryset):
-        queryset.update(shift='Morning')
-        self.message_user(request, f"{queryset.count()} students shifted to Morning shift.")
-    
+        updated = queryset.update(shift='Morning')
+        self.message_user(request, f"{updated} students shifted to Morning.")
+
     make_morning_shift.short_description = "Change shift to Morning"
-    
+
     def make_day_shift(self, request, queryset):
-        queryset.update(shift='Day')
-        self.message_user(request, f"{queryset.count()} students shifted to Day shift.")
-    
+        updated = queryset.update(shift='Day')
+        self.message_user(request, f"{updated} students shifted to Day.")
+
     make_day_shift.short_description = "Change shift to Day"
-    
-    # Save model and show success message
+
+    # Save message
     def save_model(self, request, obj, form, change):
-        if change:
-            self.message_user(request, f"Student {obj.name} updated successfully.")
-        else:
-            self.message_user(request, f"Student {obj.name} added successfully.")
         super().save_model(request, obj, form, change)
-    
-    # Quick filter for recent students
+        if change:
+            self.message_user(request, f"Student '{obj.name}' updated successfully.")
+        else:
+            self.message_user(request, f"Student '{obj.name}' added successfully.")
+
+    # Optimize query
     def get_queryset(self, request):
-        queryset = super().get_queryset(request)
-        return queryset.select_related()  # Optimize queries
-    
-    # Add custom buttons or links
+        qs = super().get_queryset(request)
+        return qs  # no select_related needed unless FK exists
+
+    # Optional: View on site
     def view_on_site(self, obj):
         return f"/students/{obj.id}/"
