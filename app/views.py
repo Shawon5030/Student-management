@@ -322,6 +322,7 @@ def login_view(request):
         }
     )
 
+
 @login_required(login_url="/login/")
 def home(request):
     qs = Students.objects.all()
