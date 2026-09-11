@@ -26,16 +26,44 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 
 from .models import Additional_information, LoginHistory
+import ipinfo
+
+from django.contrib import messages
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.models import User
+from django.shortcuts import redirect, render
+
+from .models import (
+    LoginHistory,
+    Additional_information,
+)
+
+
+import ipinfo
+
+from django.contrib import messages
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.models import User
+from django.shortcuts import redirect, render
+
+from .models import (
+    LoginHistory,
+    Additional_information,
+)
 
 
 def get_client_ip(request):
 
-    x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
+    x_forwarded_for = request.META.get(
+        "HTTP_X_FORWARDED_FOR"
+    )
 
     if x_forwarded_for:
         ip = x_forwarded_for.split(",")[0].strip()
     else:
-        ip = request.META.get("REMOTE_ADDR")
+        ip = request.META.get(
+            "REMOTE_ADDR"
+        )
 
     return ip
 
@@ -43,40 +71,155 @@ def get_client_ip(request):
 def get_location_from_ip(ip):
 
     try:
-        response = requests.get(
-            f"https://ipapi.co/{ip}/json/",
-            timeout=3
+
+        # =========================
+        # IPINFO TOKEN
+        # =========================
+
+        access_token = "5cf61de6dfa3ed"
+
+        if not access_token:
+            print("IPinfo token is empty.")
+            return {}
+
+        # =========================
+        # IPINFO HANDLER
+        # =========================
+
+        handler = ipinfo.getHandler(
+            access_token
         )
 
-        data = response.json()
+        # =========================
+        # GET DETAILS
+        # =========================
+
+        details = handler.getDetails(ip)
+
+        # =========================
+        # COMPLETE RESPONSE
+        # =========================
+
+        all_data = details.all
+
+        # =========================
+        # LOCATION
+        # =========================
+
+        latitude = None
+        longitude = None
+
+        # IPinfo normally returns:
+        # loc = "23.8103,90.4125"
+
+        loc = all_data.get("loc")
+
+        if loc:
+
+            try:
+                latitude, longitude = map(
+                    float,
+                    loc.split(",")
+                )
+            except (
+                ValueError,
+                AttributeError
+            ):
+                pass
+
+        # =========================
+        # RETURN
+        # =========================
 
         return {
-            "country": data.get("country_name"),
-            "city": data.get("city"),
+
+            # Important mapped fields
+            "ip": all_data.get(
+                "ip"
+            ),
+
+            "hostname": all_data.get(
+                "hostname"
+            ),
+
+            "country": all_data.get(
+                "country"
+            ),
+
+            "country_code": all_data.get(
+                "country"
+            ),
+
+            "region": all_data.get(
+                "region"
+            ),
+
+            "city": all_data.get(
+                "city"
+            ),
+
+            "postal_code": all_data.get(
+                "postal"
+            ),
+
+            "latitude": latitude,
+
+            "longitude": longitude,
+
+            "organization": all_data.get(
+                "org"
+            ),
+
+            "timezone": all_data.get(
+                "timezone"
+            ),
+
+            # Complete IPinfo response
+            "all_data": all_data,
         }
 
-    except Exception:
-        return {
-            "country": None,
-            "city": None,
-        }
+    except Exception as e:
 
+        print(
+            "IPinfo Error:",
+            e
+        )
 
+        return {}
+    
 def login_view(request):
 
     if request.method == "POST":
 
-        identifier = request.POST.get("identifier")
-        password = request.POST.get("password")
+        identifier = request.POST.get(
+            "identifier"
+        )
+
+        password = request.POST.get(
+            "password"
+        )
+
+        # =========================
+        # VALIDATION
+        # =========================
 
         if not identifier or not password:
-            messages.error(request, "All fields are required")
+
+            messages.error(
+                request,
+                "All fields are required"
+            )
+
             return redirect("login")
 
-        # Email or username
+        # =========================
+        # EMAIL OR USERNAME
+        # =========================
+
         if "@" in identifier:
 
             try:
+
                 user_obj = User.objects.get(
                     email__iexact=identifier
                 )
@@ -93,60 +236,20 @@ def login_view(request):
                 return redirect("login")
 
         else:
+
             username = identifier
 
-        # Authenticate
+        # =========================
+        # AUTHENTICATE
+        # =========================
+
         user = authenticate(
             request,
             username=username,
             password=password
         )
 
-        if user:
-
-            # Login
-            login(request, user)
-
-            # -------------------------
-            # IP ADDRESS
-            # -------------------------
-
-            ip_address = get_client_ip(request)
-
-            # -------------------------
-            # LOCATION
-            # -------------------------
-
-            location = get_location_from_ip(ip_address)
-
-            country = location["country"]
-            city = location["city"]
-
-            # -------------------------
-            # SAVE LOGIN HISTORY
-            # -------------------------
-
-            LoginHistory.objects.create(
-                user=user,
-                username=user.username,
-                email=user.email,
-                ip_address=ip_address,
-                country=country,
-                city=city
-            )
-
-            # -------------------------
-            # SMS
-            # -------------------------
-
-            # এখানে তোমার user/profile থেকে phone নিতে হবে
-            # উদাহরণ:
-            #
-            # phone = user.profile.phone
-
-            return redirect("home")
-
-        else:
+        if not user:
 
             messages.error(
                 request,
@@ -155,7 +258,117 @@ def login_view(request):
 
             return redirect("login")
 
-    login_image = Additional_information.objects.all()
+        # =========================
+        # LOGIN
+        # =========================
+
+        login(
+            request,
+            user
+        )
+
+        # =========================
+        # GET CLIENT IP
+        # =========================
+
+        ip_address = get_client_ip(
+            request
+        )
+
+        # =========================
+        # GET IPINFO
+        # =========================
+
+        location = get_location_from_ip(
+            ip_address
+        )
+
+        # =========================
+        # SAVE LOGIN HISTORY
+        # =========================
+
+        LoginHistory.objects.create(
+
+            # USER
+            user=user,
+            username=user.username,
+            email=user.email,
+
+            # IP
+            ip_address=ip_address,
+
+            # LOCATION
+            country=location.get(
+                "country"
+            ),
+
+            country_code=location.get(
+                "country_code"
+            ),
+
+            region=location.get(
+                "region"
+            ),
+
+            city=location.get(
+                "city"
+            ),
+
+            postal_code=location.get(
+                "postal_code"
+            ),
+
+            # COORDINATES
+            latitude=location.get(
+                "latitude"
+            ),
+
+            longitude=location.get(
+                "longitude"
+            ),
+
+            # NETWORK
+            organization=location.get(
+                "organization"
+            ),
+
+            # TIME
+            timezone=location.get(
+                "timezone"
+            ),
+
+            # HOSTNAME
+            hostname=location.get(
+                "hostname"
+            ),
+
+            # COMPLETE IPINFO DATA
+            ipinfo_data=location.get(
+                "all_data"
+            ),
+        )
+
+        # =========================
+        # SMS
+        # =========================
+        #
+        # এখানে আলাদা SMS call করার দরকার নেই।
+        #
+        # LoginHistory.objects.create()
+        # হওয়ার পর post_save signal
+        # automatically SMS পাঠাবে।
+        #
+        # =========================
+
+        return redirect("home")
+
+    # =========================
+    # LOGIN PAGE
+    # =========================
+
+    login_image = (
+        Additional_information.objects.all()
+    )
 
     return render(
         request,
@@ -164,7 +377,6 @@ def login_view(request):
             "login_page_images": login_image
         }
     )
-
 
 @login_required(login_url="/login/")
 def home(request):

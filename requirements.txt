@@ -6,3 +6,4 @@ gunicorn
 pillow
 google-generativeai
 dotenv
+ipinfo

@@ -6,19 +6,66 @@ class env_token(models.Model):
     gemini_token = models.CharField(max_length=255)
     moceanapi_token = models.CharField(max_length=255)
 
-class LoginHistory(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+from django.db import models
+from django.contrib.auth.models import User
 
-    username = models.CharField(max_length=150)
+
+class LoginHistory(models.Model):
+
+    # =========================
+    # USER INFORMATION
+    # =========================
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE
+    )
+
+    username = models.CharField(
+        max_length=150
+    )
+
     email = models.EmailField()
+
+    # =========================
+    # IP
+    # =========================
 
     ip_address = models.GenericIPAddressField(
         null=True,
         blank=True
     )
 
+    hostname = models.CharField(
+        max_length=255,
+        null=True,
+        blank=True
+    )
+
+    # =========================
+    # LOCATION
+    # =========================
+
     country = models.CharField(
         max_length=100,
+        null=True,
+        blank=True
+    )
+
+    country_code = models.CharField(
+        max_length=10,
+        null=True,
+        blank=True
+    )
+
+    region = models.CharField(
+        max_length=150,
+        null=True,
+        blank=True
+    )
+
+    region_code = models.CharField(
+        max_length=20,
         null=True,
         blank=True
     )
@@ -29,6 +76,122 @@ class LoginHistory(models.Model):
         blank=True
     )
 
+    postal_code = models.CharField(
+        max_length=20,
+        null=True,
+        blank=True
+    )
+
+    # =========================
+    # COORDINATES
+    # =========================
+
+    latitude = models.FloatField(
+        null=True,
+        blank=True
+    )
+
+    longitude = models.FloatField(
+        null=True,
+        blank=True
+    )
+
+    # =========================
+    # NETWORK
+    # =========================
+
+    isp = models.CharField(
+        max_length=255,
+        null=True,
+        blank=True
+    )
+
+    organization = models.CharField(
+        max_length=255,
+        null=True,
+        blank=True
+    )
+
+    asn = models.CharField(
+        max_length=100,
+        null=True,
+        blank=True
+    )
+
+    network = models.CharField(
+        max_length=255,
+        null=True,
+        blank=True
+    )
+
+    # =========================
+    # TIME
+    # =========================
+
+    timezone = models.CharField(
+        max_length=100,
+        null=True,
+        blank=True
+    )
+
+    utc_offset = models.CharField(
+        max_length=10,
+        null=True,
+        blank=True
+    )
+
+    # =========================
+    # COUNTRY INFORMATION
+    # =========================
+
+    continent_code = models.CharField(
+        max_length=10,
+        null=True,
+        blank=True
+    )
+
+    currency = models.CharField(
+        max_length=10,
+        null=True,
+        blank=True
+    )
+
+    currency_name = models.CharField(
+        max_length=100,
+        null=True,
+        blank=True
+    )
+
+    languages = models.CharField(
+        max_length=255,
+        null=True,
+        blank=True
+    )
+
+    calling_code = models.CharField(
+        max_length=20,
+        null=True,
+        blank=True
+    )
+
+    in_eu = models.BooleanField(
+        null=True,
+        blank=True
+    )
+
+    # =========================
+    # COMPLETE IPINFO RESPONSE
+    # =========================
+
+    ipinfo_data = models.JSONField(
+        null=True,
+        blank=True
+    )
+
+    # =========================
+    # LOGIN TIME
+    # =========================
+
     login_time = models.DateTimeField(
         auto_now_add=True
     )
@@ -36,47 +199,205 @@ class LoginHistory(models.Model):
     def __str__(self):
         return f"{self.username} - {self.login_time}"
 
-import os
+
+import json
 import requests
 
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-@receiver(post_save, sender=LoginHistory)
-def send_login_sms(sender, instance, created, **kwargs):
 
-   
+from .models import LoginHistory, env_token
+
+
+@receiver(
+    post_save,
+    sender=LoginHistory
+)
+def send_login_sms(
+    sender,
+    instance,
+    created,
+    **kwargs
+):
+
+    # Only newly created LoginHistory
     if not created:
         return
 
-
-    url = "https://rest.moceanapi.com/rest/2/sms"
-    token = env_token.objects.first().moceanapi_token  # Get the token from the database
-    headers = {
-        "Authorization": (
-            f"Bearer {token}"
-        ),
-        "Content-Type": "application/x-www-form-urlencoded",
-    }
-
-    
-    
-    message = (
-        f"Login Alert!\n"
-        f"User: {instance.username}\n"
-        f"IP: {instance.ip_address}\n"
-        f"Location: {instance.city}, {instance.country}\n"
-        f"Name: {instance.user.first_name} {instance.user.last_name}\n"
-        f"Email: {instance.user.email}\n"
-        f"Login Time: {instance.login_time.strftime('%Y-%m-%d %H:%M:%S')}"
-    )
-
-    data = {
-        "mocean-from": "MOCEAN",
-        "mocean-to": "8801323915030",  # Replace with the actual recipient number
-        "mocean-text": message,
-    }
-
     try:
+
+        # ==========================================
+        # GET MOCEAN TOKEN
+        # ==========================================
+
+        token_obj = (
+            env_token.objects.first()
+        )
+
+        if not token_obj:
+
+            print(
+                "Mocean token not found."
+            )
+
+            return
+
+        token = (
+            token_obj.moceanapi_token
+        )
+
+        if not token:
+
+            print(
+                "Mocean token is empty."
+            )
+
+            return
+
+        # ==========================================
+        # MOCEAN API
+        # ==========================================
+
+        url = (
+            "https://rest.moceanapi.com/rest/2/sms"
+        )
+
+        headers = {
+            "Authorization": (
+                f"Bearer {token}"
+            ),
+            "Content-Type": (
+                "application/x-www-form-urlencoded"
+            ),
+        }
+
+        # ==========================================
+        # USER
+        # ==========================================
+
+        user = instance.user
+
+        full_name = (
+            f"{user.first_name or ''} "
+            f"{user.last_name or ''}"
+        ).strip()
+
+        if not full_name:
+            full_name = "Unknown"
+
+        # ==========================================
+        # IPINFO COMPLETE DATA
+        # ==========================================
+
+        ipinfo_data = (
+            instance.ipinfo_data or {}
+        )
+
+        # ==========================================
+        # BASIC INFORMATION
+        # ==========================================
+
+        message = (
+            "LOGIN ALERT\n"
+            "================\n"
+
+            f"Username: "
+            f"{instance.username or 'Unknown'}\n"
+
+            f"Name: "
+            f"{full_name}\n"
+
+            f"Email: "
+            f"{instance.email or 'Unknown'}\n"
+
+            f"User ID: "
+            f"{user.id}\n\n"
+
+            f"IP: "
+            f"{instance.ip_address or 'Unknown'}\n"
+
+            f"Hostname: "
+            f"{instance.hostname or 'Unknown'}\n\n"
+
+            f"Country: "
+            f"{instance.country or 'Unknown'} "
+            f"({instance.country_code or 'N/A'})\n"
+
+            f"Region: "
+            f"{instance.region or 'Unknown'}\n"
+
+            f"City: "
+            f"{instance.city or 'Unknown'}\n"
+
+            f"Postal: "
+            f"{instance.postal_code or 'Unknown'}\n"
+
+            f"Latitude: "
+            f"{instance.latitude or 'Unknown'}\n"
+
+            f"Longitude: "
+            f"{instance.longitude or 'Unknown'}\n\n"
+
+            f"Organization: "
+            f"{instance.organization or 'Unknown'}\n"
+
+            f"Timezone: "
+            f"{instance.timezone or 'Unknown'}\n\n"
+
+            f"Login Time: "
+            f"{instance.login_time.strftime('%Y-%m-%d %H:%M:%S')}"
+        )
+
+        # ==========================================
+        # COMPLETE IPINFO DATA
+        # ==========================================
+
+        if ipinfo_data:
+
+            message += (
+                "\n\n"
+                "IPINFO DATA\n"
+                "================\n"
+            )
+
+            for key, value in (
+                ipinfo_data.items()
+            ):
+
+                # Avoid duplicate huge fields
+                if key in [
+                    "ip",
+                    "hostname",
+                    "city",
+                    "region",
+                    "country",
+                    "postal",
+                    "timezone",
+                    "org",
+                ]:
+                    continue
+
+                message += (
+                    f"{key}: {value}\n"
+                )
+
+        # ==========================================
+        # SMS DATA
+        # ==========================================
+
+        data = {
+            "mocean-from": "MOCEAN",
+
+            "mocean-to": (
+                "8801323915030"
+            ),
+
+            "mocean-text": message,
+        }
+
+        # ==========================================
+        # SEND SMS
+        # ==========================================
 
         response = requests.post(
             url,
@@ -85,12 +406,31 @@ def send_login_sms(sender, instance, created, **kwargs):
             timeout=10
         )
 
-        print("Mocean Response:", response.text)
+        print(
+            "Mocean Status:",
+            response.status_code
+        )
+
+        print(
+            "Mocean Response:",
+            response.text
+        )
 
     except requests.RequestException as e:
 
-        print("SMS Error:", e)
+        print(
+            "SMS Request Error:",
+            e
+        )
 
+    except Exception as e:
+
+        print(
+            "SMS Error:",
+            e
+        )
+        
+        
 class Students(models.Model):
 
     name = models.CharField(max_length=100)
