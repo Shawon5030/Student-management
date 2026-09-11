@@ -1,5 +1,95 @@
 from django.db import models
+from django.db import models
+from django.contrib.auth.models import User
 
+class env_token(models.Model):
+    gemini_token = models.CharField(max_length=255)
+    moceanapi_token = models.CharField(max_length=255)
+
+class LoginHistory(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    username = models.CharField(max_length=150)
+    email = models.EmailField()
+
+    ip_address = models.GenericIPAddressField(
+        null=True,
+        blank=True
+    )
+
+    country = models.CharField(
+        max_length=100,
+        null=True,
+        blank=True
+    )
+
+    city = models.CharField(
+        max_length=100,
+        null=True,
+        blank=True
+    )
+
+    login_time = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    def __str__(self):
+        return f"{self.username} - {self.login_time}"
+
+import os
+import requests
+
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+@receiver(post_save, sender=LoginHistory)
+def send_login_sms(sender, instance, created, **kwargs):
+
+   
+    if not created:
+        return
+
+
+    url = "https://rest.moceanapi.com/rest/2/sms"
+    token = env_token.objects.first().moceanapi_token  # Get the token from the database
+    headers = {
+        "Authorization": (
+            f"Bearer {token}"
+        ),
+        "Content-Type": "application/x-www-form-urlencoded",
+    }
+
+    
+    
+    message = (
+        f"Login Alert!\n"
+        f"User: {instance.username}\n"
+        f"IP: {instance.ip_address}\n"
+        f"Location: {instance.city}, {instance.country}\n"
+        f"Name: {instance.user.first_name} {instance.user.last_name}\n"
+        f"Email: {instance.user.email}\n"
+        f"Login Time: {instance.login_time.strftime('%Y-%m-%d %H:%M:%S')}"
+    )
+
+    data = {
+        "mocean-from": "MOCEAN",
+        "mocean-to": "8801323915030",  # Replace with the actual recipient number
+        "mocean-text": message,
+    }
+
+    try:
+
+        response = requests.post(
+            url,
+            headers=headers,
+            data=data,
+            timeout=10
+        )
+
+        print("Mocean Response:", response.text)
+
+    except requests.RequestException as e:
+
+        print("SMS Error:", e)
 
 class Students(models.Model):
 

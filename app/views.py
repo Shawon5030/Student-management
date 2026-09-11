@@ -18,40 +18,152 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from .models import Students
 
+import requests
+
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.models import User
+from django.contrib import messages
+
+from .models import Additional_information, LoginHistory
+
+
+def get_client_ip(request):
+
+    x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
+
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(",")[0].strip()
+    else:
+        ip = request.META.get("REMOTE_ADDR")
+
+    return ip
+
+
+def get_location_from_ip(ip):
+
+    try:
+        response = requests.get(
+            f"https://ipapi.co/{ip}/json/",
+            timeout=3
+        )
+
+        data = response.json()
+
+        return {
+            "country": data.get("country_name"),
+            "city": data.get("city"),
+        }
+
+    except Exception:
+        return {
+            "country": None,
+            "city": None,
+        }
+
+
 def login_view(request):
+
     if request.method == "POST":
-        identifier = request.POST.get("identifier")  # username or email
+
+        identifier = request.POST.get("identifier")
         password = request.POST.get("password")
 
         if not identifier or not password:
             messages.error(request, "All fields are required")
             return redirect("login")
 
-        # Check if input is email
+        # Email or username
         if "@" in identifier:
+
             try:
-                user_obj = User.objects.get(email__iexact=identifier)
+                user_obj = User.objects.get(
+                    email__iexact=identifier
+                )
+
                 username = user_obj.username
+
             except User.DoesNotExist:
-                messages.error(request, "Invalid credentials")
+
+                messages.error(
+                    request,
+                    "Invalid credentials"
+                )
+
                 return redirect("login")
+
         else:
             username = identifier
 
-  
-        user = authenticate(request, username=username, password=password)
+        # Authenticate
+        user = authenticate(
+            request,
+            username=username,
+            password=password
+        )
 
         if user:
+
+            # Login
             login(request, user)
+
+            # -------------------------
+            # IP ADDRESS
+            # -------------------------
+
+            ip_address = get_client_ip(request)
+
+            # -------------------------
+            # LOCATION
+            # -------------------------
+
+            location = get_location_from_ip(ip_address)
+
+            country = location["country"]
+            city = location["city"]
+
+            # -------------------------
+            # SAVE LOGIN HISTORY
+            # -------------------------
+
+            LoginHistory.objects.create(
+                user=user,
+                username=user.username,
+                email=user.email,
+                ip_address=ip_address,
+                country=country,
+                city=city
+            )
+
+            # -------------------------
+            # SMS
+            # -------------------------
+
+            # এখানে তোমার user/profile থেকে phone নিতে হবে
+            # উদাহরণ:
+            #
+            # phone = user.profile.phone
+
             return redirect("home")
+
         else:
-            messages.error(request, "Invalid credentials")
+
+            messages.error(
+                request,
+                "Invalid credentials"
+            )
+
             return redirect("login")
+
     login_image = Additional_information.objects.all()
-    return render(request, "login.html",{"login_page_images":login_image})
 
-   # we'll define this below
-
+    return render(
+        request,
+        "login.html",
+        {
+            "login_page_images": login_image
+        }
+    )
 
 
 @login_required(login_url="/login/")
@@ -314,3 +426,32 @@ def upload_students(request):
             "status": "error",
             "message": f"Unexpected error: {str(e)}"
         }, status=500)
+        
+        
+import json
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import render
+from .ai_service import ask_ai
+
+
+def ai_chat_page(request):
+    return render(request, 'ai_chat.html')
+
+
+@csrf_exempt
+def ai_ask(request):
+    if request.method != "POST":
+        return JsonResponse({"error": "POST only"}, status=405)
+
+    try:
+        body = json.loads(request.body)
+    except json.JSONDecodeError:
+        return JsonResponse({"success": False, "answer": "Invalid JSON"}, status=400)
+
+    question = body.get("question", "").strip()
+    if not question:
+        return JsonResponse({"success": False, "answer": "প্রশ্ন লিখুন।"})
+
+    result = ask_ai(question)
+    return JsonResponse(result)
