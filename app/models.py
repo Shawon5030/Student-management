@@ -316,21 +316,8 @@ def send_login_sms(
             f"IP: "
             f"{instance.ip_address or 'Unknown'}\n"
 
-            f"Hostname: "
-            f"{instance.hostname or 'Unknown'}\n\n"
-
-            f"Country: "
-            f"{instance.country or 'Unknown'} "
-            f"({instance.country_code or 'N/A'})\n"
-
-            f"Region: "
-            f"{instance.region or 'Unknown'}\n"
-
             f"City: "
             f"{instance.city or 'Unknown'}\n"
-
-            f"Postal: "
-            f"{instance.postal_code or 'Unknown'}\n"
 
             f"Latitude: "
             f"{instance.latitude or 'Unknown'}\n"
@@ -338,11 +325,7 @@ def send_login_sms(
             f"Longitude: "
             f"{instance.longitude or 'Unknown'}\n\n"
 
-            f"Organization: "
-            f"{instance.organization or 'Unknown'}\n"
-
-            f"Timezone: "
-            f"{instance.timezone or 'Unknown'}\n\n"
+           
 
             f"Login Time: "
             f"{instance.login_time.strftime('%Y-%m-%d %H:%M:%S')}"
@@ -367,13 +350,10 @@ def send_login_sms(
                 # Avoid duplicate huge fields
                 if key in [
                     "ip",
-                    "hostname",
                     "city",
                     "region",
-                    "country",
                     "postal",
-                    "timezone",
-                    "org",
+                
                 ]:
                     continue
 

@@ -138,37 +138,19 @@ def get_location_from_ip(ip):
                 "ip"
             ),
 
-            "hostname": all_data.get(
-                "hostname"
-            ),
 
-            "country": all_data.get(
-                "country"
-            ),
-
-            "country_code": all_data.get(
-                "country"
-            ),
-
-            "region": all_data.get(
-                "region"
-            ),
+           
 
             "city": all_data.get(
                 "city"
             ),
 
-            "postal_code": all_data.get(
-                "postal"
-            ),
 
             "latitude": latitude,
 
             "longitude": longitude,
 
-            "organization": all_data.get(
-                "org"
-            ),
+           
 
             "timezone": all_data.get(
                 "timezone"
@@ -302,22 +284,11 @@ def login_view(request):
                 "country"
             ),
 
-            country_code=location.get(
-                "country_code"
-            ),
-
-            region=location.get(
-                "region"
-            ),
-
             city=location.get(
                 "city"
             ),
 
-            postal_code=location.get(
-                "postal_code"
-            ),
-
+    
             # COORDINATES
             latitude=location.get(
                 "latitude"
@@ -327,38 +298,11 @@ def login_view(request):
                 "longitude"
             ),
 
-            # NETWORK
-            organization=location.get(
-                "organization"
-            ),
-
-            # TIME
-            timezone=location.get(
-                "timezone"
-            ),
-
-            # HOSTNAME
-            hostname=location.get(
-                "hostname"
-            ),
-
             # COMPLETE IPINFO DATA
             ipinfo_data=location.get(
                 "all_data"
             ),
         )
-
-        # =========================
-        # SMS
-        # =========================
-        #
-        # এখানে আলাদা SMS call করার দরকার নেই।
-        #
-        # LoginHistory.objects.create()
-        # হওয়ার পর post_save signal
-        # automatically SMS পাঠাবে।
-        #
-        # =========================
 
         return redirect("home")
 
