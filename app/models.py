@@ -200,7 +200,6 @@ class LoginHistory(models.Model):
         return f"{self.username} - {self.login_time}"
 
 
-import json
 import requests
 
 from django.db.models.signals import post_save
@@ -227,49 +226,26 @@ def send_login_sms(
     try:
 
         # ==========================================
-        # GET MOCEAN TOKEN
+        # GET SMS.BD API KEY
         # ==========================================
 
-        token_obj = (
-            env_token.objects.first()
-        )
+        token_obj = env_token.objects.first()
 
         if not token_obj:
-
-            print(
-                "Mocean token not found."
-            )
-
+            print("SMS.bd API key not found.")
             return
 
-        token = (
-            token_obj.moceanapi_token
-        )
+        api_key = token_obj.moceanapi_token
 
-        if not token:
-
-            print(
-                "Mocean token is empty."
-            )
-
+        if not api_key:
+            print("SMS.bd API key is empty.")
             return
 
         # ==========================================
-        # MOCEAN API
+        # SMS.BD API
         # ==========================================
 
-        url = (
-            "https://rest.moceanapi.com/rest/2/sms"
-        )
-
-        headers = {
-            "Authorization": (
-                f"Bearer {token}"
-            ),
-            "Content-Type": (
-                "application/x-www-form-urlencoded"
-            ),
-        }
+        url = "https://api.sms.net.bd/sendsms"
 
         # ==========================================
         # USER
@@ -289,9 +265,7 @@ def send_login_sms(
         # IPINFO COMPLETE DATA
         # ==========================================
 
-        ipinfo_data = (
-            instance.ipinfo_data or {}
-        )
+        ipinfo_data = instance.ipinfo_data or {}
 
         # ==========================================
         # BASIC INFORMATION
@@ -300,7 +274,6 @@ def send_login_sms(
         message = (
             "LOGIN ALERT\n"
             "================\n"
-
             f"Username: "
             f"{instance.username or 'Unknown'}\n"
 
@@ -316,16 +289,13 @@ def send_login_sms(
             f"IP: "
             f"{instance.ip_address or 'Unknown'}\n"
 
-            f"City: "
-            f"{instance.city or 'Unknown'}\n"
+
 
             f"Latitude: "
             f"{instance.latitude or 'Unknown'}\n"
 
             f"Longitude: "
             f"{instance.longitude or 'Unknown'}\n\n"
-
-           
 
             f"Login Time: "
             f"{instance.login_time.strftime('%Y-%m-%d %H:%M:%S')}"
@@ -343,17 +313,14 @@ def send_login_sms(
                 "================\n"
             )
 
-            for key, value in (
-                ipinfo_data.items()
-            ):
+            for key, value in ipinfo_data.items():
 
-                # Avoid duplicate huge fields
+                # Avoid duplicate fields
                 if key in [
                     "ip",
                     "city",
                     "region",
                     "postal",
-                
                 ]:
                     continue
 
@@ -362,17 +329,13 @@ def send_login_sms(
                 )
 
         # ==========================================
-        # SMS DATA
+        # SMS.BD DATA
         # ==========================================
 
         data = {
-            "mocean-from": "MOCEAN",
-
-            "mocean-to": (
-                "8801323915030"
-            ),
-
-            "mocean-text": message,
+            "api_key": api_key,
+            "msg": message,
+            "to": "8801323915030",
         }
 
         # ==========================================
@@ -381,34 +344,35 @@ def send_login_sms(
 
         response = requests.post(
             url,
-            headers=headers,
             data=data,
             timeout=10
         )
 
         print(
-            "Mocean Status:",
+            "SMS.bd Status:",
             response.status_code
         )
 
         print(
-            "Mocean Response:",
+            "SMS.bd Response:",
             response.text
         )
 
     except requests.RequestException as e:
 
         print(
-            "SMS Request Error:",
+            "SMS.bd Request Error:",
             e
         )
 
     except Exception as e:
 
         print(
-            "SMS Error:",
+            "SMS.bd Error:",
             e
         )
+
+
         
         
 class Students(models.Model):
